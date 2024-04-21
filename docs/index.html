@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.326">
+<meta name="generator" content="quarto-1.3.450">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -90,7 +90,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 
@@ -112,8 +113,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<section id="casa00025-group-project-title-here" class="level1 page-columns page-full">
-<h1>CASA00025 Group Project Title Here</h1>
+<section id="casa00025-group-project---aquatrend-mapper" class="level1 page-columns page-full">
+<h1>CASA00025 Group Project - AquaTrend Mapper</h1>
 <section id="project-summary" class="level2">
 <h2 class="anchored" data-anchor-id="project-summary">Project Summary</h2>
 <p>Fill in the sections below to provide a brief summary of your project. Each section should have no more than 100 words. Do not edit any of the headings.</p>
@@ -124,10 +125,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="end-user" class="level3">
 <h3 class="anchored" data-anchor-id="end-user">End User</h3>
 <p>Who are you building this application for? How does it address a need this community has?</p>
+<ol type="1">
+<li>Policy makers. The application provides policy makers with a real-time water body change monitoring tool for Poyang Lake, which helps policy makers to develop and optimize water management measures.</li>
+<li>Researchers. The application supports their research in the field of water resources management and environmental change by providing tools for water body extraction and time series analysis in Poyang Lake.</li>
+<li>Public. The application provides a transparent and intuitive platform for the public to understand the real-time situation and change trends of Poyang Lake through visualization of data and charts, and to raise the public’s attention to environmental issues.</li>
+</ol>
 </section>
 <section id="data" class="level3">
 <h3 class="anchored" data-anchor-id="data">Data</h3>
 <p>What data are you using?</p>
+<p>Time: December 1, 2018 to November 31, 2021 Location: Poyang Lake Area Sentinel-1 satellite imagery: Multiview processed Sentinel IW GRD class imagery. The radar image is imaged in IW mode with VV polarization. Reasons: 1. Sentienl-1’s SAR data are not constrained by weather, cloud cover, etc. 2. SAR data has been identified for frequent monitoring of surface water 3. SAR specular reflectivity separates open water from land surface Data division: Spring: March-May; Summer: June-August; Autumn: September-November; Winter: December-February (next year). Because, Poyang Lake wet season: June-August, normal water season: April, May and September, dry season: October-February of the next year (Yao, et al., 2021).</p>
 </section>
 <section id="methodology" class="level3">
 <h3 class="anchored" data-anchor-id="methodology">Methodology</h3>
@@ -142,7 +149,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="the-application">The Application</h2>
 <p>Replace the link below with the link to your application.</p>
 <div class="column-page">
-<iframe src="https://ollielballinger.users.earthengine.app/view/turkey-earthquake" width="100%" height="700px">
+<iframe src="https://ee-qichenxi552.projects.earthengine.app/view/test" width="100%" height="700px">
 </iframe>
 </div>
 </section>
@@ -158,7 +165,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="images/beirut_change_2020.jpg" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">Pixelwise T-Test, 2018</figcaption><p></p>
+<figcaption class="figure-caption">Pixelwise T-Test, 2018</figcaption>
 </figure>
 </div>
 <p>and math: <span class="math display">\[ \Large t = {\frac{\overline{x_1}-\overline{x_2}} {\sqrt{\frac{s^2_1}{n_1} + \frac{s^2_2}{n_2}}}} \]</span></p>
