@@ -1,0 +1,72 @@
+# CASA00025 Group Project - AquaTrend Mapper
+
+## Project Summary 
+
+Fill in the sections below to provide a brief summary of your project. Each section should have no more than 100 words. Do not edit any of the headings.
+
+### Problem Statement 
+
+What is the problem you’re trying to address using this application? 
+
+### End User 
+
+Who are you building this application for? How does it address a need this community has?
+
+(1) Policy makers. The application provides policy makers with a real-time water body change monitoring tool for Poyang Lake, which helps policy makers to develop and optimize water management measures.
+(2) Researchers. The application supports their research in the field of water resources management and environmental change by providing tools for water body extraction and time series analysis in Poyang Lake.
+(3) Public. The application provides a transparent and intuitive platform for the public to understand the real-time situation and change trends of Poyang Lake through visualization of data and charts, and to raise the public's attention to environmental issues.
+
+
+### Data
+
+What data are you using? 
+
+Time: December 1, 2018 to November 31, 2021
+Location: Poyang Lake Area
+Sentinel-1 satellite imagery: Multiview processed Sentinel IW GRD class imagery. 
+The radar image is imaged in IW mode with VV polarization.
+Reasons:
+1. Sentienl-1's SAR data are not constrained by weather, cloud cover, etc.
+2. SAR data has been identified for frequent monitoring of surface water
+3. SAR specular reflectivity separates open water from land surface
+Data division: Spring: March-May; Summer: June-August; Autumn: September-November; Winter: December-February (next year).
+Because, Poyang Lake wet season: June-August, normal water season: April, May and September, dry season: October-February of the next year (Yao, et al., 2021).
+
+
+### Methodology
+
+How are you using this data to address the problem?
+
+### Interface
+
+How does your application's interface work to address the needs of your end user?
+
+## The Application 
+
+Replace the link below with the link to your application.
+
+:::{.column-page}
+
+<iframe src='https://ee-qichenxi552.projects.earthengine.app/view/test' width='100%' height='700px'></iframe>
+
+:::
+## How it Works 
+
+Use this section to explain how your application works using code blocks and text explanations (no more than 500 words excluding code):
+
+```js
+Map.setCenter(35.51898, 33.90153, 15);
+
+Map.setOptions("satellite");
+
+var aoi = ee.Geometry.Point(35.51898, 33.90153).buffer(3000);
+```
+
+You can include images:
+
+![Pixelwise T-Test, 2018](images/beirut_change_2020.jpg)
+
+and math:
+$$ \Large t = {\frac{\overline{x_1}-\overline{x_2}} {\sqrt{\frac{s^2_1}{n_1} + \frac{s^2_2}{n_2}}}} $$
+
+
