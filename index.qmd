@@ -8,7 +8,7 @@ Fill in the sections below to provide a brief summary of your project. Each sect
 
 What is the problem you’re trying to address using this application? 
 
-Influenced by monsoon rainfall and the hydrology of the Yangtze River (the longest river in Asia and the third longest in the world), Poyang Lake, China's largest freshwater lake, exhibits significant seasonal water level fluctuations. Our application is dedicated to monitoring and managing the dynamics of Poyang Lake, the largest freshwater lake in China. Understanding the seasonal fluctuations in water levels driven by monsoon rainfall and the interactions with the Yangtze River is crucial for ecological conservation, disaster management, and understanding environmental changes.
+Influenced by monsoon rainfall and the hydrology of the Yangtze River (the longest river in Asia and the third longest in the world), Poyang Lake, the largest freshwater lake and the second largest lake in China, exhibits significant seasonal water level fluctuations. Our application is dedicated to monitoring and managing the dynamics of Poyang Lake. Understanding the seasonal fluctuations in water levels driven by monsoon rainfall and the interactions with the Yangtze River is crucial for ecological conservation, disaster management, and understanding environmental changes.
 
 ### End User 
 
