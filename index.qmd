@@ -21,8 +21,8 @@ Who are you building this application for? How does it address a need this commu
 
 What data are you using? 
 
-Time: December 1, 2015 to November 30, 2021
-Location: Poyang Lake, China
+Time: December 1, 2015 to November 31, 2021
+Location: Poyang Lake Area
 Sentinel-1 satellite imagery: Multiview processed Sentinel IW GRD class imagery. 
 The radar image is imaged in IW mode with VV polarization.
 
@@ -63,7 +63,7 @@ Replace the link below with the link to your application.
 
 Use this section to explain how your application works using code blocks and text explanations (no more than 500 words excluding code):
 
-### Pre-processing
+### 3.1 Pre-processing
 Define the extent of the study area, import and preprocess Sentinel-1 satellite images, and use filters to select images with specific polarization modes (VV polarization modes), modes of operation (interleaved observation modes), and orbital attributes (ascending intersecting orbits).
 
 ```js
@@ -94,7 +94,7 @@ Apply median filtering to smooth the VV band in the original image and add the s
 .map(function(image){return image.addBands(image.select('VV').focal_median(parseFloat('50'),'circle','meters').rename('VV_smoothed'))}); // smoothing
 print(s1);
 ```
-### Water extraction
+### 3.2 Water extraction
 
 Separate water body information from other surface features in the Sentinel-1 data by calculating an optimal threshold using the Otsu binarized image algorithm.
 
@@ -158,7 +158,7 @@ var water_frequency = water_sum.divide(s1.select('waterMask').size()).multiply(1
 var water_frequency_masked = water_frequency.updateMask(water_frequency.gt(min_occurence));
 ```
 
-### User interface
+### 3.3 User interface
 
 Generate a water body frequency map and legend based on the calculated frequency of occurrence of water bodies and add them to the map.
 
@@ -267,7 +267,8 @@ function updateLayerVisibility(showS1, showFrequency) {
 }
 ```
 
-Create buttons to control the display of layers, clicking on S1 Image will display the Sentinel-1 image layer, clicking on Water Frequency will display the water body frequency layer
+Create buttons to control the display of layers, clicking on S1 Image will display the Sentinel-1 image layer, clicking on Water Frequency will display the water body frequency layer.
+
 ```js
 // Layer options button functionality
 var layerOptionsButton = ui.Button({
@@ -325,6 +326,268 @@ var layerOptionsButton = ui.Button({
     controlPanel.add(homeButton);
   }
 });
+```
+Next, we create two date sliders. In the second GIF interface, the slider's date range is set from December 1, 2015, to December 1, 2021. For the third interface, the `updateWaterDataAndChart` slider's date range spans from December 1, 2019, to December 31, 2021.
+
+```js
+// Initialize the date slider
+var gifDateSlider = ui.DateSlider({
+  start: '2015-12-01',
+  end: '2021-12-01',
+  value: ['2015-12-01', '2021-12-01'],
+  period: 365,
+  onChange: updateGIF,
+  style: { width: "95%" }
+});
+
+var waterMaskDateSlider = ui.DateSlider({
+  start: '2019-01-01',
+  end: '2021-12-01',
+  value: ['2019-01-01', '2021-12-31'],
+  period: 90,
+  onChange: updateWaterDataAndChart,
+  style: { width: "95%" }
+});
+```
+
+Subsequently, we created animated GIFs, defined the date range for the GIFs, and filtered the satellite data, setting parameters for the GIFs (including size, among others), to generate a dynamic GIF displayed on the user interface. This allows for the observation of water body changes over a period of time.
+
+```js
+// Define functions for updating GIFs
+function updateGIF() {
+  var range = ee.DateRange(ee.Date(gifDateSlider.getValue()[0]), ee.Date(gifDateSlider.getValue()[1]));
+  var s1Filtered = s1.filterDate(range.start(), range.end()).filterBounds(aoi);
+  var s1WithWaterMask = s1Filtered.map(add_waterMask);
+  var gifParams = {
+    bands: ["VV", "VV", "VV"],
+    region: aoi,
+    dimensions: 600,
+    framesPerSecond: 3,
+    min: -20,
+    max: 0,
+    startDate: range.start().format('YYYY-MM-dd'),
+    endDate: range.end().format('YYYY-MM-dd')
+  };
+  var gifAnimation = ui.Thumbnail({
+    image: s1WithWaterMask,
+    params: gifParams,
+    style: {
+      position: 'bottom-center',
+      maxHeight: '250px',
+      margin: '0 auto',
+    }
+  });
+```
+
+To manage and display the GIF animations, it is essential first to ensure that new GIFs are generated based on the selected time range. Additionally, the order of elements in the GIF interface must be correct: the slider indicating the date range appears first, followed by the display of the GIF animation, and finally, the home button.
+
+```js
+  //  Updating GIF animations with a fixed index
+  if (controlPanel.widgets().length() > 3) {
+    controlPanel.widgets().set(3, gifAnimation);  // Make sure the GIF animation is always in the fourth position
+  } else {
+    controlPanel.widgets().insert(3, gifAnimation);  // If there are not already four controls, insert
+  }
+}
+
+function showGIFPanel() {
+  controlPanel.clear();
+
+  var gifTitle = ui.Label('Time-Lapse GIFs', {fontWeight: 'bold', fontSize: '18px', textAlign: 'center'});
+  var gifDescription = ui.Label('GIF animations are created by extracting a series of images from the Sentinel-1 dataset within a chosen date range and arranging them chronologically. Use the date slider below to analyze a specific year and generate a GIF image of Poyang Lake showing the changes in the water body.', {fontSize: '13px', textAlign: 'left'});
+
+  controlPanel.add(gifTitle);
+  controlPanel.add(gifDescription);
+  controlPanel.add(gifDateSlider);
+
+  updateGIF();  // Call the update function directly to load the initial GIF.
+
+  controlPanel.add(homeButton);  // Ensure that the homeButton is always added last
+}
+```
+
+这里放一个第二界面的图片
+
+
+You might think that analyzing satellite imagery to monitor the extent of water bodies requires complex procedures, but in fact, our approach is clear and straightforward. We've crafted the `updateWaterDataAndChart` function to sets up a user interface panel dedicated to displaying water body areas. Just click on the data points of the chart triggers the map to display the corresponding satellite image and water mask for the chosen date.
+
+```js
+// Define functions for updating water body mask data and graphs
+function updateWaterDataAndChart() {
+  var range = ee.DateRange(ee.Date(waterMaskDateSlider.getValue()[0]), ee.Date(waterMaskDateSlider.getValue()[1]));
+  var filteredCollection = s1.filterDate(range.start(), range.end()).filterBounds(aoi);
+  var waterAreaSeries = filteredCollection.map(add_waterMask)
+      .select('waterMask')
+      .reduce(ee.Reducer.sum());
+  var waterAreaChart = ui.Chart.image.seriesByRegion({
+    imageCollection: filteredCollection.select('waterMask'),
+    regions: aoi,
+    reducer: ee.Reducer.sum(),
+    scale: 100,
+    xProperty: 'system:time_start',
+    seriesProperty: 'label'
+  }).setOptions({
+    title: 'Area of the identified water mask',
+    hAxis: {title: 'Date'},
+    vAxis: {title: 'Area (sq km)'},
+    lineWidth: 1,
+    pointSize: 3
+  });
+
+  // Use a fixed index to update the water body area charts
+  if (controlPanel.widgets().length() > 3) {
+    controlPanel.widgets().set(3, waterAreaChart);  // Make sure the water body area chart is always in the fourth position
+  } else {
+    controlPanel.widgets().insert(3, waterAreaChart);  // If there are not already four controls, insert
+  }
+
+  //  Bind click events to line charts
+  waterAreaChart.onClick(function(xValue, yValue, seriesName) {
+    if (!xValue) return;
+    var equalDate = ee.Filter.equals('system:time_start', xValue);
+    var filteredImage = s1.filter(equalDate).first();
+    var classification = filteredImage.clip(aoi).select('waterMask');
+    var date_string = new Date(xValue).toLocaleString('de-DE', {dateStyle: 'full', timeStyle: 'short' });
+    var visParams = {
+      bands: ['VV'],
+      max: 0,
+      min: -20
+    };
+
+    Map.layers().reset();
+    Map.addLayer(filteredImage, visParams, 'S1-Image [' + date_string + ']');
+    Map.addLayer(classification, {min: 0, max: 1, palette: ['#FFFFFF', '#0000FF']}, 'Water mask [' + date_string + ']');
+  });
+}
+```
+The following code clears the existing panel, adds a title, a description, and a date slider for selecting quarters, then updates and displays the water body area chart for Poyang Lake. Finally, it ensures that the home button is added last for navigation consistency.
+
+```js
+function showWaterMaskPanel() {
+  controlPanel.clear();
+
+  var maskTitle = ui.Label('Water Body Area', {fontWeight: 'bold', fontSize: '18px', textAlign: 'center'});
+  var maskDescription = ui.Label('Use the date slider below to analyze a given quarter. Click on the graph to show the water body area for a given day in Poyang Lake. ', {fontSize: '13px', textAlign: 'left'});
+
+  controlPanel.add(maskTitle);
+  controlPanel.add(maskDescription);
+  controlPanel.add(waterMaskDateSlider);
+
+  updateWaterDataAndChart();  // Direct call to the update function to load the initial water body area map
+
+  controlPanel.add(homeButton);  // Ensure that the homeButton is always added last
+}
+```
+
+Finally, we configure the main panel, which includes title labels, introductions, and buttons for generating GIFs and analyzing water body areas. This setup ensures that users can dynamically explore satellite imagery, water occurrence frequency, and specific analyses through custom-designed date sliders and refresh the display to access relevant data layers or interactive animations.
+
+```js
+// Define a label to serve as the main title of the app interface
+var title = ui.Label({
+  value: 'Poyang Lake Water Body Monitoring',
+  style: {
+    fontWeight: 'bold',
+    fontSize: '18px',
+    margin: '0 0 4px 0', // Define margins around the label
+    padding: '0'
+  }
+});
+
+// Create introductory label with wrapped text
+var intro1 = ui.Label('This tool analyzes water body changes in Poyang Lake using Sentinel-1 Synthetic Aperture Radar imagery. It displays the frequency of water occurrence during investigation period. It also features interactive tools to generate time-lapse GIFs and analyze changes in water body area over time.', {
+  whiteSpace: 'wrap'
+});
+
+var intro2 = ui.Label('To compare radar images and the frequency of water occurrence, click the button below:', {
+  whiteSpace: 'wrap'
+});
+
+var intro3 = ui.Label('To explore the temporal changes in the water body, click the button below:', {
+  whiteSpace: 'wrap'
+});
+
+var intro4 = ui.Label('To learn about changes in water body area, click the button below:', {
+  whiteSpace: 'wrap'
+});
+// Home Page Button Configuration
+var homeButton = ui.Button({
+  style: {stretch: 'horizontal'},
+  label: 'Home',
+  onClick: function() {
+    home();
+  }
+});
+
+// Home Panel Configuration Functions
+var home = function() {
+  Map.setCenter(116.32, 28.89, 9);
+  Map.setOptions("Hybrid");
+  controlPanel.clear();
+  controlPanel.add(title);
+  controlPanel.add(intro1); // Add introductory text
+  controlPanel.add(intro2);
+  controlPanel.add(layerOptionsButton); // Add new button
+  controlPanel.add(intro3);
+  controlPanel.add(gifButton); // Add GIF generation button
+  controlPanel.add(intro4);
+  controlPanel.add(analyzeButton); // Add water mask analysis button
+  displayLayers('frequency');  // When return to the home page, show only the water body frequency layer.
+};
+
+// Define GIF button and its function
+var gifButton = ui.Button({
+  label: 'Time-Lapse GIFs',
+  style: {
+    fontSize: '16px',
+    padding: '10px',
+    margin: '10px auto',
+    width: '100%', 
+    stretch: 'horizontal'
+  },
+  onClick: function() {
+    controlPanel.clear();
+    var gifTitle = ui.Label('GIF', {fontWeight: 'bold', fontSize: '18px', textAlign: 'center'});
+    var gifDescription = ui.Label('Select a date range to generate an animated GIF of the region.', {fontSize: '13px', textAlign: 'center'});
+    controlPanel.add(gifTitle);
+    controlPanel.add(gifDescription);
+    controlPanel.add(gifDateSlider);
+    updateGIF();  // Call a function to update a GIF based on the selected date range
+    controlPanel.add(homeButton);
+  }
+});
+
+// Define analyse water masks button
+var analyzeButton = ui.Button({
+  label: 'Water Body Area',
+  style: {
+    fontSize: '16px',
+    padding: '10px',
+    margin: '10px auto',
+    width: '100%', 
+    stretch: 'horizontal'
+  },
+  onClick: function() {
+    controlPanel.clear();
+    var chartTitle = ui.Label('Area of the identified water mask', {fontWeight: 'bold', fontSize: '18px', textAlign: 'center'});
+    var chartDescription = ui.Label('Select a date range to generate a water body mask for the area.', {fontSize: '13px', textAlign: 'center'});
+    controlPanel.add(chartTitle);
+    controlPanel.add(chartDescription);
+    controlPanel.add(waterMaskDateSlider); // Add date slider for selecting analysis date range
+    updateWaterDataAndChart();  // Call function to update water body mask data and graphs
+    controlPanel.add(homeButton);
+  }
+});
+
+
+// Set GIF and water mask button click handlers to their respective panel showing functions
+gifButton.onClick(showGIFPanel);
+analyzeButton.onClick(showWaterMaskPanel);
+// Set the home button click handler to the home function
+homeButton.onClick(home);
+
+// Add the control panel to the map and show the home interface
+Map.add(controlPanel);
+home();  //// Initialise and display the main interface
 ```
 
 
