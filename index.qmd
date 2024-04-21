@@ -39,6 +39,13 @@ Because, Poyang Lake wet season: June-August, normal water season: April, May an
 
 How are you using this data to address the problem?
 
+- Screening, cropping, smoothing preprocessing of Sentinel-1 radar image.
+- Optimal thresholds were obtained using histograms generated from VV polarization data and calling otsu functions.
+- Mark pixels smaller than the threshold as bodies of water. Make non-water bodies be considered transparent.
+- Calculate sum of the number of times a water body is present at each pixel point.
+- Total number of occurrences of water bodies / Total number of images = Frequency of occurrence of water bodies per pixel point. The frequency is filtered to be higher than a set threshold, thus showing areas of frequent water bodies.
+
+
 ### Interface
 
 How does your application's interface work to address the needs of your end user?

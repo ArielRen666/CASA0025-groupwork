@@ -141,6 +141,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="methodology" class="level3">
 <h3 class="anchored" data-anchor-id="methodology">Methodology</h3>
 <p>How are you using this data to address the problem?</p>
+<ul>
+<li>Screening, cropping, smoothing preprocessing of Sentinel-1 radar image.</li>
+<li>Optimal thresholds were obtained using histograms generated from VV polarization data and calling otsu functions.</li>
+<li>Mark pixels smaller than the threshold as bodies of water. Make non-water bodies be considered transparent.</li>
+<li>Calculate sum of the number of times a water body is present at each pixel point.</li>
+<li>Total number of occurrences of water bodies / Total number of images = Frequency of occurrence of water bodies per pixel point. The frequency is filtered to be higher than a set threshold, thus showing areas of frequent water bodies.</li>
+</ul>
 </section>
 <section id="interface" class="level3">
 <h3 class="anchored" data-anchor-id="interface">Interface</h3>
