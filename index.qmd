@@ -1,18 +1,12 @@
-# CASA00025 Group Project - AquaTrend Mapper
+# CASA00025 Group Project - Poyang Lake Water Body Monitoring
 
 ## Project Summary 
 
-Fill in the sections below to provide a brief summary of your project. Each section should have no more than 100 words. Do not edit any of the headings.
-
 ### Problem Statement 
 
-What is the problem you’re trying to address using this application? 
-
-Influenced by monsoon rainfall and the hydrology of the Yangtze River (the longest river in Asia and the third longest in the world), Poyang Lake, the largest freshwater lake and the second largest lake in China, exhibits significant seasonal water level fluctuations. Our application is dedicated to monitoring and managing the dynamics of Poyang Lake. Understanding the seasonal fluctuations in water levels driven by monsoon rainfall and the interactions with the Yangtze River is crucial for ecological conservation, disaster management, and understanding environmental changes.
+Influenced by monsoon rainfall and the hydrology of the Yangtze River (the longest river in Asia and the third longest in the world), Poyang Lake, the largest freshwater lake and the second largest lake in China, exhibits significant seasonal water level fluctuations. Our application is dedicated to monitoring and managing the dynamics of Poyang Lake. Understanding the seasonal fluctuations in water levels driven by monsoon rainfall is crucial for ecological conservation, disaster management, and understanding environmental changes.
 
 ### End User 
-
-Who are you building this application for? How does it address a need this community has?
 
 (1) Policy makers. The application provides policy makers with a real-time water body change monitoring tool for Poyang Lake, which helps policy makers to develop and optimize water management measures.
 (2) Researchers. The application supports their research in the field of water resources management and environmental change by providing tools for water body extraction and time series analysis in Poyang Lake.
@@ -21,25 +15,20 @@ Who are you building this application for? How does it address a need this commu
 
 ### Data
 
-What data are you using? 
+- Location: Poyang Lake Area
+- Time: December 1, 2015 to November 30, 2021
+- Sentinel-1 satellite imagery: Multiview processed Sentinel IW GRD class imagery. 
+- Radar image is imaged in IW mode with VV polarization.
 
-Time: December 1, 2015 to November 31, 2021
-Location: Poyang Lake Area
-Sentinel-1 satellite imagery: Multiview processed Sentinel IW GRD class imagery. 
-The radar image is imaged in IW mode with VV polarization.
+- Poyang Lake wet season: June-August, normal water season: April, May and September, dry season: October-February of the next year (Yao, et al., 2021).
+- Data division: Spring: March-May; Summer: June-August; Autumn: September-November; Winter: December-February (next year).
 
-Reasons:
+- Reasons:
 1. Sentienl-1's SAR data are not constrained by weather, cloud cover, etc.
-2. SAR data has been identified for frequent monitoring of surface water
-3. SAR specular reflectivity separates open water from land surface
-
-Data division: Spring: March-May; Summer: June-August; Autumn: September-November; Winter: December-February (next year).
-Because, Poyang Lake wet season: June-August, normal water season: April, May and September, dry season: October-February of the next year (Yao, et al., 2021).
-
+2. SAR data has been identified for frequent monitoring of surface water.
+3. SAR specular reflectivity separates open water from land surface.
 
 ### Methodology
-
-How are you using this data to address the problem?
 
 - Screening, cropping, smoothing preprocessing of Sentinel-1 radar image.
 - Optimal thresholds were obtained using histograms generated from VV polarization data and calling otsu functions.
@@ -50,57 +39,50 @@ How are you using this data to address the problem?
 
 ### Interface
 
-How does your application's interface work to address the needs of your end user?
+Our application's interface meets user needs by providing interactive tools to visualize and analyze water body changes in Poyang Lake. Users can toggle between different map layers, such as a Sentinel-1 radar composite and a water frequency map that shows the frequency of water occurrence during the monitoring period. The "Water Body Area" feature allows users to generate charts and interact with them to observe changes over time, with clickable points that update the map with corresponding images and water mask classifications. The interface also supports time-lapse GIFs, enabling users to select custom date ranges for analyzing temporal changes.
 
 ## The Application 
 
-Replace the link below with the link to your application.
+To view full earth engine code, please [click here](https://code.earthengine.google.com/5dd2ebfa147303ca85e009bbcbe772b8#).
 
 :::{.column-page}
 
-<iframe src='https://ee-qichenxi552.projects.earthengine.app/view/test' width='100%' height='700px'></iframe>
+<iframe src='https://ee-dengwx25.projects.earthengine.app/view/water-body-monitoring' width='100%' height='700px'></iframe>
 
 :::
 ## How it Works 
 
-Use this section to explain how your application works using code blocks and text explanations (no more than 500 words excluding code):
-
 ### 3.1 Pre-processing
-Define the extent of the study area, import and preprocess Sentinel-1 satellite images, and use filters to select images with specific polarization modes (VV polarization modes), modes of operation (interleaved observation modes), and orbital attributes (ascending intersecting orbits).
+
+Define the extent of the study area, import and preprocess the Sentinel-1 satellite images, filter to obtain images with a specific polarization mode (VV polarization mode), mode of operation (interleaved observation mode), orbital attributes (ascending and intersecting orbits), the study area, and the time of day, and perform smoothing.
 
 ```js
-// Defining the geographic extent of the  Poyang Lake
-var poyangLakeJiujiang = ee.Geometry.Polygon([
+
+// Defining the geographic extent of the Poyang Lake
+var poyangLake = ee.Geometry.Polygon([
    [[115.82,29.40],[116.77,29.40],[116.77,28.35],[115.82,28.35]]
 ]);
 
 // Adding a Lake District Scope
-var aoi = poyangLakeJiujiang
+var aoi = poyangLake
 Map.centerObject(aoi);
+
 // Importing Sentinel One data and filtering it
 var s1 =  ee.ImageCollection('COPERNICUS/S1_GRD')
 .filter(ee.Filter.listContains('transmitterReceiverPolarisation', 'VV'))
 .filter(ee.Filter.eq('instrumentMode', 'IW'))
 .filter(ee.Filter.eq('orbitProperties_pass', 'ASCENDING'))
-```
-Cropping of remote sensing satellite images for specific study areas and times.
-
-```js
-.filter(ee.Filter.contains({leftField: ".geo", rightValue: aoi})) // The filter section contains images of the study area
+.filter(ee.Filter.contains({leftField: ".geo", rightValue: aoi})) 
 .map(function(image){return image.clip(Map.getBounds(true))})
-```
-
-Apply median filtering to smooth the VV band in the original image and add the smoothed band to the current image.
-
-```js
 .map(function(image){return image.addBands(image.select('VV').focal_median(parseFloat('50'),'circle','meters').rename('VV_smoothed'))}); // smoothing
 print(s1);
 ```
 ### 3.2 Water extraction
 
-Separate water body information from other surface features in the Sentinel-1 data by calculating an optimal threshold using the Otsu binarized image algorithm.
+The histograms of the VV bands in the Sentinel-1 radar images were calculated, and the optimal thresholds calculated using the OTSU algorithm were used to create water body masks and calculate the frequency of occurrence of water bodies.
 
 ```js
+
 // Extraction of water bodies by binarization of Sentinel One data using the OSTU approach
 var otsu = function(histogram) {
   var counts = ee.Array(ee.Dictionary(histogram).get('histogram'));
@@ -124,11 +106,7 @@ var otsu = function(histogram) {
   });
   return means.sort(bss).get([-1]);
 };
-```
 
-The histograms of the VV polarization bands in the images were calculated, and then the Otsu algorithm was used to calculate the optimal threshold to which the smoothed VV bands of the images were compared to generate the water body masks.
-
-```js
 // Adding a water body mask as a band to S1
 var add_waterMask = function(image){
   // Calculation of histograms
@@ -142,17 +120,14 @@ var add_waterMask = function(image){
   });
   // Thresholding via the OSTU algorithm
   var threshold = otsu(histogram.get('VV_histogram'));
+  
   // Acquisition of water body masks
   var waterMask = image.select('VV_smoothed').lt(threshold).rename('waterMask');
   waterMask = waterMask.updateMask(waterMask); 
   return image.addBands(waterMask);
 };
 s1 = s1.map(add_waterMask);
-```
 
-The frequency of water body occurrences was calculated by summing the total number of image elements of the water body mask in each image and dividing by the total number of water body mask images in the image collection.
-
-```js
 // Calculate the frequency of occurrence of water bodies during the experiment
 var min_occurence = 10;
 var water_sum = s1.select('waterMask').reduce(ee.Reducer.sum());
@@ -593,11 +568,6 @@ home();  //// Initialise and display the main interface
 ```
 
 
-You can include images:
-
 ![Pixelwise T-Test, 2018](images/beirut_change_2020.jpg)
-
-and math:
-$$ \Large t = {\frac{\overline{x_1}-\overline{x_2}} {\sqrt{\frac{s^2_1}{n_1} + \frac{s^2_2}{n_2}}}} $$
 
 
