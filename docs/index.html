@@ -130,11 +130,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="data" class="level3">
 <h3 class="anchored" data-anchor-id="data">Data</h3>
 <ul>
-<li><p>Location: Poyang Lake Area</p></li>
-<li><p>Time: December 1, 2015 to November 30, 2021</p></li>
+<li><p>Sentinel-1 satellite images of the Poyang Lake region from December 1, 2015 to November 30, 2021</p></li>
 <li><p>Data division: Spring: March-May; Summer: June-August; Autumn: September-November; Winter: December-February (next year).</p></li>
-<li><p>Sentinel-1 satellite imagery: Multiview processed Sentinel IW GRD class imagery.</p></li>
-<li><p>Radar image is imaged in IW mode with VV polarization.</p></li>
+<li><p>Multiview processed Sentinel IW GRD class imagery. Radar image is imaged in IW mode with VV polarization.</p></li>
 <li><p>Reasons:</p></li>
 </ul>
 <ol type="1">
@@ -156,7 +154,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="interface" class="level3">
 <h3 class="anchored" data-anchor-id="interface">Interface</h3>
-<p>Our application’s interface meets user needs by providing interactive tools to visualize and analyze water body changes in Poyang Lake. Users can toggle between different map layers, such as a Sentinel-1 radar composite and a water frequency map that shows the frequency of water occurrence during the monitoring period. The “Water Body Area” feature allows users to generate charts and interact with them to observe changes over time, with clickable points that update the map with corresponding images and water mask classifications. The interface also supports time-lapse GIFs, enabling users to select custom date ranges for analyzing temporal changes.</p>
+<p>Our application’s interface meets user needs by providing interactive tools to visualise and analyze water body changes in Poyang Lake. Users can toggle between different map layers, such as a Sentinel-1 radar composite and a water frequency map that shows the frequency of water occurrence during the monitoring period. The “Water Body Area” feature allows users to generate charts and interact with them to observe changes over time, with clickable points that update the map with corresponding images and water mask classifications. The interface also supports time-lapse GIFs, enabling users to select custom date ranges for analyzing temporal changes.</p>
 </section>
 </section>
 <section id="the-application" class="level2 page-columns page-full">
@@ -172,79 +170,79 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="pre-processing" class="level3">
 <h3 class="anchored" data-anchor-id="pre-processing">3.1 Pre-processing</h3>
 <p>Define the extent of the study area, import and preprocess the Sentinel-1 satellite images, filter to obtain images with a specific polarization mode (VV polarization mode), mode of operation (interleaved observation mode), orbital attributes (ascending and intersecting orbits), the study area, and the time of day, and perform smoothing.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Defining the geographic extent of the Poyang Lake</span></span>
+<div class="sourceCode" id="cb1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Define the geographic extent of the Poyang Lake</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> poyangLake <span class="op">=</span> ee<span class="op">.</span><span class="at">Geometry</span><span class="op">.</span><span class="fu">Polygon</span>([</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>   [[<span class="fl">115.82</span><span class="op">,</span><span class="fl">29.40</span>]<span class="op">,</span>[<span class="fl">116.77</span><span class="op">,</span><span class="fl">29.40</span>]<span class="op">,</span>[<span class="fl">116.77</span><span class="op">,</span><span class="fl">28.35</span>]<span class="op">,</span>[<span class="fl">115.82</span><span class="op">,</span><span class="fl">28.35</span>]]</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>])<span class="op">;</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">// Adding a Lake District Scope</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">// Add a Lake District Scope</span></span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> aoi <span class="op">=</span> poyangLake</span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="bu">Map</span><span class="op">.</span><span class="fu">centerObject</span>(aoi)<span class="op">;</span></span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">// Importing Sentinel One data and filtering it</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">// Import Sentinel One data and filter it</span></span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> s1 <span class="op">=</span>  ee<span class="op">.</span><span class="fu">ImageCollection</span>(<span class="st">'COPERNICUS/S1_GRD'</span>)</span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="op">.</span><span class="fu">filter</span>(ee<span class="op">.</span><span class="at">Filter</span><span class="op">.</span><span class="fu">listContains</span>(<span class="st">'transmitterReceiverPolarisation'</span><span class="op">,</span> <span class="st">'VV'</span>))</span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="op">.</span><span class="fu">filter</span>(ee<span class="op">.</span><span class="at">Filter</span><span class="op">.</span><span class="fu">eq</span>(<span class="st">'instrumentMode'</span><span class="op">,</span> <span class="st">'IW'</span>))</span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="op">.</span><span class="fu">filter</span>(ee<span class="op">.</span><span class="at">Filter</span><span class="op">.</span><span class="fu">eq</span>(<span class="st">'orbitProperties_pass'</span><span class="op">,</span> <span class="st">'ASCENDING'</span>))</span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="op">.</span><span class="fu">filter</span>(ee<span class="op">.</span><span class="at">Filter</span><span class="op">.</span><span class="fu">contains</span>({<span class="dt">leftField</span><span class="op">:</span> <span class="st">".geo"</span><span class="op">,</span> <span class="dt">rightValue</span><span class="op">:</span> aoi})) </span>
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="op">.</span><span class="fu">map</span>(<span class="kw">function</span>(image){<span class="cf">return</span> image<span class="op">.</span><span class="fu">clip</span>(<span class="bu">Map</span><span class="op">.</span><span class="fu">getBounds</span>(<span class="kw">true</span>))})</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="op">.</span><span class="fu">map</span>(<span class="kw">function</span>(image){<span class="cf">return</span> image<span class="op">.</span><span class="fu">addBands</span>(image<span class="op">.</span><span class="fu">select</span>(<span class="st">'VV'</span>)<span class="op">.</span><span class="fu">focal_median</span>(<span class="pp">parseFloat</span>(<span class="st">'50'</span>)<span class="op">,</span><span class="st">'circle'</span><span class="op">,</span><span class="st">'meters'</span>)<span class="op">.</span><span class="fu">rename</span>(<span class="st">'VV_smoothed'</span>))})<span class="op">;</span> <span class="co">// smoothing</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(s1)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co">// Smooth</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="op">.</span><span class="fu">map</span>(<span class="kw">function</span>(image){<span class="cf">return</span> image<span class="op">.</span><span class="fu">addBands</span>(image<span class="op">.</span><span class="fu">select</span>(<span class="st">'VV'</span>)<span class="op">.</span><span class="fu">focal_median</span>(<span class="pp">parseFloat</span>(<span class="st">'50'</span>)<span class="op">,</span><span class="st">'circle'</span><span class="op">,</span><span class="st">'meters'</span>)<span class="op">.</span><span class="fu">rename</span>(<span class="st">'VV_smoothed'</span>))})<span class="op">;</span> </span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(s1)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="water-extraction" class="level3">
 <h3 class="anchored" data-anchor-id="water-extraction">3.2 Water Extraction</h3>
 <p>The histograms of the VV bands in the Sentinel-1 radar images were calculated, and the optimal thresholds calculated using the OTSU algorithm were used to create water body masks and calculate the frequency of occurrence of water bodies.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">// Extraction of water bodies by binarization of Sentinel One data using the OSTU approach</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> otsu <span class="op">=</span> <span class="kw">function</span>(histogram) {</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> counts <span class="op">=</span> ee<span class="op">.</span><span class="fu">Array</span>(ee<span class="op">.</span><span class="fu">Dictionary</span>(histogram)<span class="op">.</span><span class="fu">get</span>(<span class="st">'histogram'</span>))<span class="op">;</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> means <span class="op">=</span> ee<span class="op">.</span><span class="fu">Array</span>(ee<span class="op">.</span><span class="fu">Dictionary</span>(histogram)<span class="op">.</span><span class="fu">get</span>(<span class="st">'bucketMeans'</span>))<span class="op">;</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> size <span class="op">=</span> means<span class="op">.</span><span class="fu">length</span>()<span class="op">.</span><span class="fu">get</span>([<span class="dv">0</span>])<span class="op">;</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> total <span class="op">=</span> counts<span class="op">.</span><span class="fu">reduce</span>(ee<span class="op">.</span><span class="at">Reducer</span><span class="op">.</span><span class="fu">sum</span>()<span class="op">,</span> [<span class="dv">0</span>])<span class="op">.</span><span class="fu">get</span>([<span class="dv">0</span>])<span class="op">;</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> sum <span class="op">=</span> means<span class="op">.</span><span class="fu">multiply</span>(counts)<span class="op">.</span><span class="fu">reduce</span>(ee<span class="op">.</span><span class="at">Reducer</span><span class="op">.</span><span class="fu">sum</span>()<span class="op">,</span> [<span class="dv">0</span>])<span class="op">.</span><span class="fu">get</span>([<span class="dv">0</span>])<span class="op">;</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> mean <span class="op">=</span> sum<span class="op">.</span><span class="fu">divide</span>(total)<span class="op">;</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> indices <span class="op">=</span> ee<span class="op">.</span><span class="at">List</span><span class="op">.</span><span class="fu">sequence</span>(<span class="dv">1</span><span class="op">,</span> size)<span class="op">;</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> bss <span class="op">=</span> indices<span class="op">.</span><span class="fu">map</span>(<span class="kw">function</span>(i) {</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> aCounts <span class="op">=</span> counts<span class="op">.</span><span class="fu">slice</span>(<span class="dv">0</span><span class="op">,</span> <span class="dv">0</span><span class="op">,</span> i)<span class="op">;</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> aCount <span class="op">=</span> aCounts<span class="op">.</span><span class="fu">reduce</span>(ee<span class="op">.</span><span class="at">Reducer</span><span class="op">.</span><span class="fu">sum</span>()<span class="op">,</span> [<span class="dv">0</span>])<span class="op">.</span><span class="fu">get</span>([<span class="dv">0</span>])<span class="op">;</span></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> aMeans <span class="op">=</span> means<span class="op">.</span><span class="fu">slice</span>(<span class="dv">0</span><span class="op">,</span> <span class="dv">0</span><span class="op">,</span> i)<span class="op">;</span></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> aMean <span class="op">=</span> aMeans<span class="op">.</span><span class="fu">multiply</span>(aCounts)</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">reduce</span>(ee<span class="op">.</span><span class="at">Reducer</span><span class="op">.</span><span class="fu">sum</span>()<span class="op">,</span> [<span class="dv">0</span>])<span class="op">.</span><span class="fu">get</span>([<span class="dv">0</span>])</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">divide</span>(aCount)<span class="op">;</span></span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> bCount <span class="op">=</span> total<span class="op">.</span><span class="fu">subtract</span>(aCount)<span class="op">;</span></span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> bMean <span class="op">=</span> sum<span class="op">.</span><span class="fu">subtract</span>(aCount<span class="op">.</span><span class="fu">multiply</span>(aMean))<span class="op">.</span><span class="fu">divide</span>(bCount)<span class="op">;</span></span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> aCount<span class="op">.</span><span class="fu">multiply</span>(aMean<span class="op">.</span><span class="fu">subtract</span>(mean)<span class="op">.</span><span class="fu">pow</span>(<span class="dv">2</span>))<span class="op">.</span><span class="fu">add</span>(</span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>           bCount<span class="op">.</span><span class="fu">multiply</span>(bMean<span class="op">.</span><span class="fu">subtract</span>(mean)<span class="op">.</span><span class="fu">pow</span>(<span class="dv">2</span>)))<span class="op">;</span></span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> means<span class="op">.</span><span class="fu">sort</span>(bss)<span class="op">.</span><span class="fu">get</span>([<span class="op">-</span><span class="dv">1</span>])<span class="op">;</span></span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="co">// Adding a water body mask as a band to S1</span></span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> add_waterMask <span class="op">=</span> <span class="kw">function</span>(image){</span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Calculation of histograms</span></span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> histogram <span class="op">=</span> image<span class="op">.</span><span class="fu">select</span>(<span class="st">'VV'</span>)<span class="op">.</span><span class="fu">reduceRegion</span>({</span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    <span class="dt">reducer</span><span class="op">:</span> ee<span class="op">.</span><span class="at">Reducer</span><span class="op">.</span><span class="fu">histogram</span>(<span class="dv">255</span><span class="op">,</span> <span class="dv">2</span>)</span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">combine</span>(<span class="st">'mean'</span><span class="op">,</span> <span class="kw">null</span><span class="op">,</span> <span class="kw">true</span>)</span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">combine</span>(<span class="st">'variance'</span><span class="op">,</span> <span class="kw">null</span><span class="op">,</span> <span class="kw">true</span>)<span class="op">,</span> </span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    <span class="dt">geometry</span><span class="op">:</span> aoi<span class="op">,</span> </span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>    <span class="dt">scale</span><span class="op">:</span> <span class="dv">10</span><span class="op">,</span></span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>    <span class="dt">bestEffort</span><span class="op">:</span> <span class="kw">true</span></span>
-<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
-<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Thresholding via the OSTU algorithm</span></span>
-<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> threshold <span class="op">=</span> <span class="fu">otsu</span>(histogram<span class="op">.</span><span class="fu">get</span>(<span class="st">'VV_histogram'</span>))<span class="op">;</span></span>
-<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Acquisition of water body masks</span></span>
-<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> waterMask <span class="op">=</span> image<span class="op">.</span><span class="fu">select</span>(<span class="st">'VV_smoothed'</span>)<span class="op">.</span><span class="fu">lt</span>(threshold)<span class="op">.</span><span class="fu">rename</span>(<span class="st">'waterMask'</span>)<span class="op">;</span></span>
-<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>  waterMask <span class="op">=</span> waterMask<span class="op">.</span><span class="fu">updateMask</span>(waterMask)<span class="op">;</span> </span>
-<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> image<span class="op">.</span><span class="fu">addBands</span>(waterMask)<span class="op">;</span></span>
-<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span>
-<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>s1 <span class="op">=</span> s1<span class="op">.</span><span class="fu">map</span>(add_waterMask)<span class="op">;</span></span>
-<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a><span class="co">// Calculate the frequency of occurrence of water bodies during the experiment</span></span>
-<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> min_occurence <span class="op">=</span> <span class="dv">10</span><span class="op">;</span></span>
-<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> water_sum <span class="op">=</span> s1<span class="op">.</span><span class="fu">select</span>(<span class="st">'waterMask'</span>)<span class="op">.</span><span class="fu">reduce</span>(ee<span class="op">.</span><span class="at">Reducer</span><span class="op">.</span><span class="fu">sum</span>())<span class="op">;</span></span>
-<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> water_frequency <span class="op">=</span> water_sum<span class="op">.</span><span class="fu">divide</span>(s1<span class="op">.</span><span class="fu">select</span>(<span class="st">'waterMask'</span>)<span class="op">.</span><span class="fu">size</span>())<span class="op">.</span><span class="fu">multiply</span>(<span class="dv">100</span>)<span class="op">;</span></span>
-<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> water_frequency_masked <span class="op">=</span> water_frequency<span class="op">.</span><span class="fu">updateMask</span>(water_frequency<span class="op">.</span><span class="fu">gt</span>(min_occurence))<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Extraction of water bodies by binarization of Sentinel One data using the OSTU approach</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> otsu <span class="op">=</span> <span class="kw">function</span>(histogram) {</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> counts <span class="op">=</span> ee<span class="op">.</span><span class="fu">Array</span>(ee<span class="op">.</span><span class="fu">Dictionary</span>(histogram)<span class="op">.</span><span class="fu">get</span>(<span class="st">'histogram'</span>))<span class="op">;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> means <span class="op">=</span> ee<span class="op">.</span><span class="fu">Array</span>(ee<span class="op">.</span><span class="fu">Dictionary</span>(histogram)<span class="op">.</span><span class="fu">get</span>(<span class="st">'bucketMeans'</span>))<span class="op">;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> size <span class="op">=</span> means<span class="op">.</span><span class="fu">length</span>()<span class="op">.</span><span class="fu">get</span>([<span class="dv">0</span>])<span class="op">;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> total <span class="op">=</span> counts<span class="op">.</span><span class="fu">reduce</span>(ee<span class="op">.</span><span class="at">Reducer</span><span class="op">.</span><span class="fu">sum</span>()<span class="op">,</span> [<span class="dv">0</span>])<span class="op">.</span><span class="fu">get</span>([<span class="dv">0</span>])<span class="op">;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> sum <span class="op">=</span> means<span class="op">.</span><span class="fu">multiply</span>(counts)<span class="op">.</span><span class="fu">reduce</span>(ee<span class="op">.</span><span class="at">Reducer</span><span class="op">.</span><span class="fu">sum</span>()<span class="op">,</span> [<span class="dv">0</span>])<span class="op">.</span><span class="fu">get</span>([<span class="dv">0</span>])<span class="op">;</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> mean <span class="op">=</span> sum<span class="op">.</span><span class="fu">divide</span>(total)<span class="op">;</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> indices <span class="op">=</span> ee<span class="op">.</span><span class="at">List</span><span class="op">.</span><span class="fu">sequence</span>(<span class="dv">1</span><span class="op">,</span> size)<span class="op">;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> bss <span class="op">=</span> indices<span class="op">.</span><span class="fu">map</span>(<span class="kw">function</span>(i) {</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> aCounts <span class="op">=</span> counts<span class="op">.</span><span class="fu">slice</span>(<span class="dv">0</span><span class="op">,</span> <span class="dv">0</span><span class="op">,</span> i)<span class="op">;</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> aCount <span class="op">=</span> aCounts<span class="op">.</span><span class="fu">reduce</span>(ee<span class="op">.</span><span class="at">Reducer</span><span class="op">.</span><span class="fu">sum</span>()<span class="op">,</span> [<span class="dv">0</span>])<span class="op">.</span><span class="fu">get</span>([<span class="dv">0</span>])<span class="op">;</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> aMeans <span class="op">=</span> means<span class="op">.</span><span class="fu">slice</span>(<span class="dv">0</span><span class="op">,</span> <span class="dv">0</span><span class="op">,</span> i)<span class="op">;</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> aMean <span class="op">=</span> aMeans<span class="op">.</span><span class="fu">multiply</span>(aCounts)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">reduce</span>(ee<span class="op">.</span><span class="at">Reducer</span><span class="op">.</span><span class="fu">sum</span>()<span class="op">,</span> [<span class="dv">0</span>])<span class="op">.</span><span class="fu">get</span>([<span class="dv">0</span>])</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">divide</span>(aCount)<span class="op">;</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> bCount <span class="op">=</span> total<span class="op">.</span><span class="fu">subtract</span>(aCount)<span class="op">;</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> bMean <span class="op">=</span> sum<span class="op">.</span><span class="fu">subtract</span>(aCount<span class="op">.</span><span class="fu">multiply</span>(aMean))<span class="op">.</span><span class="fu">divide</span>(bCount)<span class="op">;</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> aCount<span class="op">.</span><span class="fu">multiply</span>(aMean<span class="op">.</span><span class="fu">subtract</span>(mean)<span class="op">.</span><span class="fu">pow</span>(<span class="dv">2</span>))<span class="op">.</span><span class="fu">add</span>(</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>           bCount<span class="op">.</span><span class="fu">multiply</span>(bMean<span class="op">.</span><span class="fu">subtract</span>(mean)<span class="op">.</span><span class="fu">pow</span>(<span class="dv">2</span>)))<span class="op">;</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> means<span class="op">.</span><span class="fu">sort</span>(bss)<span class="op">.</span><span class="fu">get</span>([<span class="op">-</span><span class="dv">1</span>])<span class="op">;</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="co">// Add a water body mask as a band to S1</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> add_waterMask <span class="op">=</span> <span class="kw">function</span>(image){</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Calculation of histograms</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> histogram <span class="op">=</span> image<span class="op">.</span><span class="fu">select</span>(<span class="st">'VV'</span>)<span class="op">.</span><span class="fu">reduceRegion</span>({</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    <span class="dt">reducer</span><span class="op">:</span> ee<span class="op">.</span><span class="at">Reducer</span><span class="op">.</span><span class="fu">histogram</span>(<span class="dv">255</span><span class="op">,</span> <span class="dv">2</span>)</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">combine</span>(<span class="st">'mean'</span><span class="op">,</span> <span class="kw">null</span><span class="op">,</span> <span class="kw">true</span>)</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">combine</span>(<span class="st">'variance'</span><span class="op">,</span> <span class="kw">null</span><span class="op">,</span> <span class="kw">true</span>)<span class="op">,</span> </span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>    <span class="dt">geometry</span><span class="op">:</span> aoi<span class="op">,</span> </span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    <span class="dt">scale</span><span class="op">:</span> <span class="dv">10</span><span class="op">,</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>    <span class="dt">bestEffort</span><span class="op">:</span> <span class="kw">true</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Threshold via the OSTU algorithm</span></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> threshold <span class="op">=</span> <span class="fu">otsu</span>(histogram<span class="op">.</span><span class="fu">get</span>(<span class="st">'VV_histogram'</span>))<span class="op">;</span></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Acquisition of water body masks</span></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> waterMask <span class="op">=</span> image<span class="op">.</span><span class="fu">select</span>(<span class="st">'VV_smoothed'</span>)<span class="op">.</span><span class="fu">lt</span>(threshold)<span class="op">.</span><span class="fu">rename</span>(<span class="st">'waterMask'</span>)<span class="op">;</span></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>  waterMask <span class="op">=</span> waterMask<span class="op">.</span><span class="fu">updateMask</span>(waterMask)<span class="op">;</span> </span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> image<span class="op">.</span><span class="fu">addBands</span>(waterMask)<span class="op">;</span></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>s1 <span class="op">=</span> s1<span class="op">.</span><span class="fu">map</span>(add_waterMask)<span class="op">;</span></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a><span class="co">// Calculate the frequency of occurrence of water bodies during the experiment</span></span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> min_occurence <span class="op">=</span> <span class="dv">10</span><span class="op">;</span></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> water_sum <span class="op">=</span> s1<span class="op">.</span><span class="fu">select</span>(<span class="st">'waterMask'</span>)<span class="op">.</span><span class="fu">reduce</span>(ee<span class="op">.</span><span class="at">Reducer</span><span class="op">.</span><span class="fu">sum</span>())<span class="op">;</span></span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> water_frequency <span class="op">=</span> water_sum<span class="op">.</span><span class="fu">divide</span>(s1<span class="op">.</span><span class="fu">select</span>(<span class="st">'waterMask'</span>)<span class="op">.</span><span class="fu">size</span>())<span class="op">.</span><span class="fu">multiply</span>(<span class="dv">100</span>)<span class="op">;</span></span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> water_frequency_masked <span class="op">=</span> water_frequency<span class="op">.</span><span class="fu">updateMask</span>(water_frequency<span class="op">.</span><span class="fu">gt</span>(min_occurence))<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="user-interface" class="level3">
 <h3 class="anchored" data-anchor-id="user-interface">3.3 User Interface</h3>
@@ -308,7 +306,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">height</span><span class="op">:</span> <span class="st">'100%'</span><span class="op">,</span></span>
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  }</span>
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Create a function called ‘displayLayers’ that manages the display of layers on the map.</p>
+<p>Create a function called <code>displayLayers</code> that manages the display of layers on the map.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">// First define a function to manage the layer display</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">displayLayers</span>(layerToShow) {</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Remove all layers</span></span>
@@ -345,12 +343,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="the-first-function-layer-options" class="level4">
 <h4 class="anchored" data-anchor-id="the-first-function-layer-options">3.3.2 The First Function: Layer Options</h4>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/222.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Layer Options</figcaption>
-</figure>
-</div>
 <p>Create buttons to control the display of layers, clicking on S1 Image will display the Sentinel-1 image layer, clicking on Water Frequency will display the water body frequency layer.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Layer options button functionality</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> layerOptionsButton <span class="op">=</span> ui<span class="op">.</span><span class="fu">Button</span>({</span>
@@ -408,16 +400,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a>    controlPanel<span class="op">.</span><span class="fu">add</span>(homeButton)<span class="op">;</span></span>
 <span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a>  }</span>
 <span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/222.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Layer Options</figcaption>
+</figure>
+</div>
 </section>
 <section id="the-second-function-time-lapse-gifs" class="level4">
 <h4 class="anchored" data-anchor-id="the-second-function-time-lapse-gifs">3.3.3 The Second Function: Time-Lapse GIFs</h4>
 <p>Next, we create date slider, animated GIFs, defined the date range for the GIFs, and filtered the satellite data, setting parameters for the GIFs, to generate a dynamic GIF displayed on the user interface. This allows for the observation of water body changes over a period of time.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/333.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Layer Options</figcaption>
-</figure>
-</div>
 <div class="sourceCode" id="cb8"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Initialize the date slider</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> gifDateSlider <span class="op">=</span> ui<span class="op">.</span><span class="fu">DateSlider</span>({</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">start</span><span class="op">:</span> <span class="st">'2015-12-01'</span><span class="op">,</span></span>
@@ -475,16 +467,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>  controlPanel<span class="op">.</span><span class="fu">add</span>(homeButton)<span class="op">;</span>  <span class="co">// Ensure that the homeButton is always added last</span></span>
 <span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/333.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Time-Lapse GIFs</figcaption>
+</figure>
+</div>
 </section>
 <section id="the-third-function-water-body-area" class="level4">
 <h4 class="anchored" data-anchor-id="the-third-function-water-body-area">3.3.4 The Third Function: Water Body Area</h4>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/444.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Layer Options</figcaption>
-</figure>
-</div>
-<p>Then, We’ve crafted the <code>updateWaterDataAndChart</code> function to sets up a user interface panel dedicated to displaying water body areas. Just click on the data points of the chart triggers the map to display the corresponding satellite image and water mask for the chosen date.</p>
+<p>Then, We’ve crafted the <code>updateWaterDataAndChart</code> function to set up a user interface panel dedicated to displaying water body areas. Just click on the data points of the chart triggers the map to display the corresponding satellite image and water mask for the chosen date.</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> waterMaskDateSlider <span class="op">=</span> ui<span class="op">.</span><span class="fu">DateSlider</span>({</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">start</span><span class="op">:</span> <span class="st">'2015-12-01'</span><span class="op">,</span></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">end</span><span class="op">:</span> <span class="st">'2021-12-01'</span><span class="op">,</span></span>
@@ -552,10 +544,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  controlPanel<span class="op">.</span><span class="fu">add</span>(maskDescription)<span class="op">;</span></span>
 <span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  controlPanel<span class="op">.</span><span class="fu">add</span>(waterMaskDateSlider)<span class="op">;</span></span>
 <span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">updateWaterDataAndChart</span>()<span class="op">;</span>  <span class="co">// Direct call to the update function to load the initial water body area map</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">updateWaterDataAndChart</span>()<span class="op">;</span></span>
 <span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>  controlPanel<span class="op">.</span><span class="fu">add</span>(homeButton)<span class="op">;</span>  <span class="co">// Ensure that the homeButton is always added last</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>  controlPanel<span class="op">.</span><span class="fu">add</span>(homeButton)<span class="op">;</span></span>
 <span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/444.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Water Body Area</figcaption>
+</figure>
+</div>
 </section>
 <section id="configure-the-main-panel" class="level4">
 <h4 class="anchored" data-anchor-id="configure-the-main-panel">3.3.5 Configure the Main Panel</h4>
@@ -587,89 +585,95 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> intro4 <span class="op">=</span> ui<span class="op">.</span><span class="fu">Label</span>(<span class="st">'To learn about changes in water body area, click the button below:'</span><span class="op">,</span> {</span>
 <span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>  <span class="dt">whiteSpace</span><span class="op">:</span> <span class="st">'wrap'</span></span>
 <span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span>
-<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a><span class="co">// Home Page Button Configuration</span></span>
-<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> homeButton <span class="op">=</span> ui<span class="op">.</span><span class="fu">Button</span>({</span>
-<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>  <span class="dt">style</span><span class="op">:</span> {<span class="dt">stretch</span><span class="op">:</span> <span class="st">'horizontal'</span>}<span class="op">,</span></span>
-<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">'Home'</span><span class="op">,</span></span>
-<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>  <span class="dt">onClick</span><span class="op">:</span> <span class="kw">function</span>() {</span>
-<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>    <span class="fu">home</span>()<span class="op">;</span></span>
-<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span>
-<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a><span class="co">// Home Panel Configuration Functions</span></span>
-<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> home <span class="op">=</span> <span class="kw">function</span>() {</span>
-<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a>  <span class="bu">Map</span><span class="op">.</span><span class="fu">setCenter</span>(<span class="fl">116.32</span><span class="op">,</span> <span class="fl">28.89</span><span class="op">,</span> <span class="dv">9</span>)<span class="op">;</span></span>
-<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a>  <span class="bu">Map</span><span class="op">.</span><span class="fu">setOptions</span>(<span class="st">"Hybrid"</span>)<span class="op">;</span></span>
-<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a>  controlPanel<span class="op">.</span><span class="fu">clear</span>()<span class="op">;</span></span>
-<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a>  controlPanel<span class="op">.</span><span class="fu">add</span>(title)<span class="op">;</span></span>
-<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a>  controlPanel<span class="op">.</span><span class="fu">add</span>(intro1)<span class="op">;</span> <span class="co">// Add introductory text</span></span>
-<span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a>  controlPanel<span class="op">.</span><span class="fu">add</span>(intro2)<span class="op">;</span></span>
-<span id="cb12-45"><a href="#cb12-45" aria-hidden="true" tabindex="-1"></a>  controlPanel<span class="op">.</span><span class="fu">add</span>(layerOptionsButton)<span class="op">;</span> <span class="co">// Add new button</span></span>
-<span id="cb12-46"><a href="#cb12-46" aria-hidden="true" tabindex="-1"></a>  controlPanel<span class="op">.</span><span class="fu">add</span>(intro3)<span class="op">;</span></span>
-<span id="cb12-47"><a href="#cb12-47" aria-hidden="true" tabindex="-1"></a>  controlPanel<span class="op">.</span><span class="fu">add</span>(gifButton)<span class="op">;</span> <span class="co">// Add GIF generation button</span></span>
-<span id="cb12-48"><a href="#cb12-48" aria-hidden="true" tabindex="-1"></a>  controlPanel<span class="op">.</span><span class="fu">add</span>(intro4)<span class="op">;</span></span>
-<span id="cb12-49"><a href="#cb12-49" aria-hidden="true" tabindex="-1"></a>  controlPanel<span class="op">.</span><span class="fu">add</span>(analyzeButton)<span class="op">;</span> <span class="co">// Add water mask analysis button</span></span>
-<span id="cb12-50"><a href="#cb12-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">displayLayers</span>(<span class="st">'frequency'</span>)<span class="op">;</span>  <span class="co">// When return to the home page, show only the water body frequency layer.</span></span>
-<span id="cb12-51"><a href="#cb12-51" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span>
-<span id="cb12-52"><a href="#cb12-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-53"><a href="#cb12-53" aria-hidden="true" tabindex="-1"></a><span class="co">// Define GIF button and its function</span></span>
-<span id="cb12-54"><a href="#cb12-54" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> gifButton <span class="op">=</span> ui<span class="op">.</span><span class="fu">Button</span>({</span>
-<span id="cb12-55"><a href="#cb12-55" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">'Time-Lapse GIFs'</span><span class="op">,</span></span>
-<span id="cb12-56"><a href="#cb12-56" aria-hidden="true" tabindex="-1"></a>  <span class="dt">style</span><span class="op">:</span> {</span>
-<span id="cb12-57"><a href="#cb12-57" aria-hidden="true" tabindex="-1"></a>    <span class="dt">fontSize</span><span class="op">:</span> <span class="st">'16px'</span><span class="op">,</span></span>
-<span id="cb12-58"><a href="#cb12-58" aria-hidden="true" tabindex="-1"></a>    <span class="dt">padding</span><span class="op">:</span> <span class="st">'10px'</span><span class="op">,</span></span>
-<span id="cb12-59"><a href="#cb12-59" aria-hidden="true" tabindex="-1"></a>    <span class="dt">margin</span><span class="op">:</span> <span class="st">'10px auto'</span><span class="op">,</span></span>
-<span id="cb12-60"><a href="#cb12-60" aria-hidden="true" tabindex="-1"></a>    <span class="dt">width</span><span class="op">:</span> <span class="st">'100%'</span><span class="op">,</span> </span>
-<span id="cb12-61"><a href="#cb12-61" aria-hidden="true" tabindex="-1"></a>    <span class="dt">stretch</span><span class="op">:</span> <span class="st">'horizontal'</span></span>
-<span id="cb12-62"><a href="#cb12-62" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
-<span id="cb12-63"><a href="#cb12-63" aria-hidden="true" tabindex="-1"></a>  <span class="dt">onClick</span><span class="op">:</span> <span class="kw">function</span>() {</span>
-<span id="cb12-64"><a href="#cb12-64" aria-hidden="true" tabindex="-1"></a>    controlPanel<span class="op">.</span><span class="fu">clear</span>()<span class="op">;</span></span>
-<span id="cb12-65"><a href="#cb12-65" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> gifTitle <span class="op">=</span> ui<span class="op">.</span><span class="fu">Label</span>(<span class="st">'GIF'</span><span class="op">,</span> {<span class="dt">fontWeight</span><span class="op">:</span> <span class="st">'bold'</span><span class="op">,</span> <span class="dt">fontSize</span><span class="op">:</span> <span class="st">'18px'</span><span class="op">,</span> <span class="dt">textAlign</span><span class="op">:</span> <span class="st">'center'</span>})<span class="op">;</span></span>
-<span id="cb12-66"><a href="#cb12-66" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> gifDescription <span class="op">=</span> ui<span class="op">.</span><span class="fu">Label</span>(<span class="st">'Select a date range to generate an animated GIF of the region.'</span><span class="op">,</span> {<span class="dt">fontSize</span><span class="op">:</span> <span class="st">'13px'</span><span class="op">,</span> <span class="dt">textAlign</span><span class="op">:</span> <span class="st">'center'</span>})<span class="op">;</span></span>
-<span id="cb12-67"><a href="#cb12-67" aria-hidden="true" tabindex="-1"></a>    controlPanel<span class="op">.</span><span class="fu">add</span>(gifTitle)<span class="op">;</span></span>
-<span id="cb12-68"><a href="#cb12-68" aria-hidden="true" tabindex="-1"></a>    controlPanel<span class="op">.</span><span class="fu">add</span>(gifDescription)<span class="op">;</span></span>
-<span id="cb12-69"><a href="#cb12-69" aria-hidden="true" tabindex="-1"></a>    controlPanel<span class="op">.</span><span class="fu">add</span>(gifDateSlider)<span class="op">;</span></span>
-<span id="cb12-70"><a href="#cb12-70" aria-hidden="true" tabindex="-1"></a>    <span class="fu">updateGIF</span>()<span class="op">;</span>  <span class="co">// Call a function to update a GIF based on the selected date range</span></span>
-<span id="cb12-71"><a href="#cb12-71" aria-hidden="true" tabindex="-1"></a>    controlPanel<span class="op">.</span><span class="fu">add</span>(homeButton)<span class="op">;</span></span>
-<span id="cb12-72"><a href="#cb12-72" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb12-73"><a href="#cb12-73" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span>
-<span id="cb12-74"><a href="#cb12-74" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-75"><a href="#cb12-75" aria-hidden="true" tabindex="-1"></a><span class="co">// Define analyse water masks button</span></span>
-<span id="cb12-76"><a href="#cb12-76" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> analyzeButton <span class="op">=</span> ui<span class="op">.</span><span class="fu">Button</span>({</span>
-<span id="cb12-77"><a href="#cb12-77" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">'Water Body Area'</span><span class="op">,</span></span>
-<span id="cb12-78"><a href="#cb12-78" aria-hidden="true" tabindex="-1"></a>  <span class="dt">style</span><span class="op">:</span> {</span>
-<span id="cb12-79"><a href="#cb12-79" aria-hidden="true" tabindex="-1"></a>    <span class="dt">fontSize</span><span class="op">:</span> <span class="st">'16px'</span><span class="op">,</span></span>
-<span id="cb12-80"><a href="#cb12-80" aria-hidden="true" tabindex="-1"></a>    <span class="dt">padding</span><span class="op">:</span> <span class="st">'10px'</span><span class="op">,</span></span>
-<span id="cb12-81"><a href="#cb12-81" aria-hidden="true" tabindex="-1"></a>    <span class="dt">margin</span><span class="op">:</span> <span class="st">'10px auto'</span><span class="op">,</span></span>
-<span id="cb12-82"><a href="#cb12-82" aria-hidden="true" tabindex="-1"></a>    <span class="dt">width</span><span class="op">:</span> <span class="st">'100%'</span><span class="op">,</span> </span>
-<span id="cb12-83"><a href="#cb12-83" aria-hidden="true" tabindex="-1"></a>    <span class="dt">stretch</span><span class="op">:</span> <span class="st">'horizontal'</span></span>
-<span id="cb12-84"><a href="#cb12-84" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
-<span id="cb12-85"><a href="#cb12-85" aria-hidden="true" tabindex="-1"></a>  <span class="dt">onClick</span><span class="op">:</span> <span class="kw">function</span>() {</span>
-<span id="cb12-86"><a href="#cb12-86" aria-hidden="true" tabindex="-1"></a>    controlPanel<span class="op">.</span><span class="fu">clear</span>()<span class="op">;</span></span>
-<span id="cb12-87"><a href="#cb12-87" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> chartTitle <span class="op">=</span> ui<span class="op">.</span><span class="fu">Label</span>(<span class="st">'Area of the identified water mask'</span><span class="op">,</span> {<span class="dt">fontWeight</span><span class="op">:</span> <span class="st">'bold'</span><span class="op">,</span> <span class="dt">fontSize</span><span class="op">:</span> <span class="st">'18px'</span><span class="op">,</span> <span class="dt">textAlign</span><span class="op">:</span> <span class="st">'center'</span>})<span class="op">;</span></span>
-<span id="cb12-88"><a href="#cb12-88" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> chartDescription <span class="op">=</span> ui<span class="op">.</span><span class="fu">Label</span>(<span class="st">'Select a date range to generate a water body mask for the area.'</span><span class="op">,</span> {<span class="dt">fontSize</span><span class="op">:</span> <span class="st">'13px'</span><span class="op">,</span> <span class="dt">textAlign</span><span class="op">:</span> <span class="st">'center'</span>})<span class="op">;</span></span>
-<span id="cb12-89"><a href="#cb12-89" aria-hidden="true" tabindex="-1"></a>    controlPanel<span class="op">.</span><span class="fu">add</span>(chartTitle)<span class="op">;</span></span>
-<span id="cb12-90"><a href="#cb12-90" aria-hidden="true" tabindex="-1"></a>    controlPanel<span class="op">.</span><span class="fu">add</span>(chartDescription)<span class="op">;</span></span>
-<span id="cb12-91"><a href="#cb12-91" aria-hidden="true" tabindex="-1"></a>    controlPanel<span class="op">.</span><span class="fu">add</span>(waterMaskDateSlider)<span class="op">;</span> <span class="co">// Add date slider for selecting analysis date range</span></span>
-<span id="cb12-92"><a href="#cb12-92" aria-hidden="true" tabindex="-1"></a>    <span class="fu">updateWaterDataAndChart</span>()<span class="op">;</span>  <span class="co">// Call function to update water body mask data and graphs</span></span>
-<span id="cb12-93"><a href="#cb12-93" aria-hidden="true" tabindex="-1"></a>    controlPanel<span class="op">.</span><span class="fu">add</span>(homeButton)<span class="op">;</span></span>
-<span id="cb12-94"><a href="#cb12-94" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb12-95"><a href="#cb12-95" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span>
-<span id="cb12-96"><a href="#cb12-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a><span class="co">// Home Page Button Configuration</span></span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> homeButton <span class="op">=</span> ui<span class="op">.</span><span class="fu">Button</span>({</span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>  <span class="dt">style</span><span class="op">:</span> {<span class="dt">stretch</span><span class="op">:</span> <span class="st">'horizontal'</span>}<span class="op">,</span></span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">'Home'</span><span class="op">,</span></span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>  <span class="dt">onClick</span><span class="op">:</span> <span class="kw">function</span>() {</span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>    <span class="fu">home</span>()<span class="op">;</span></span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a><span class="co">// Home Panel Configuration Functions</span></span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> home <span class="op">=</span> <span class="kw">function</span>() {</span>
+<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a>  <span class="bu">Map</span><span class="op">.</span><span class="fu">setCenter</span>(<span class="fl">116.32</span><span class="op">,</span> <span class="fl">28.89</span><span class="op">,</span> <span class="dv">9</span>)<span class="op">;</span></span>
+<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a>  <span class="bu">Map</span><span class="op">.</span><span class="fu">setOptions</span>(<span class="st">"Hybrid"</span>)<span class="op">;</span></span>
+<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a>  controlPanel<span class="op">.</span><span class="fu">clear</span>()<span class="op">;</span></span>
+<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a>  controlPanel<span class="op">.</span><span class="fu">add</span>(title)<span class="op">;</span></span>
+<span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a>  controlPanel<span class="op">.</span><span class="fu">add</span>(intro1)<span class="op">;</span> <span class="co">// Add introductory text</span></span>
+<span id="cb12-45"><a href="#cb12-45" aria-hidden="true" tabindex="-1"></a>  controlPanel<span class="op">.</span><span class="fu">add</span>(intro2)<span class="op">;</span></span>
+<span id="cb12-46"><a href="#cb12-46" aria-hidden="true" tabindex="-1"></a>  controlPanel<span class="op">.</span><span class="fu">add</span>(layerOptionsButton)<span class="op">;</span> <span class="co">// Add new button</span></span>
+<span id="cb12-47"><a href="#cb12-47" aria-hidden="true" tabindex="-1"></a>  controlPanel<span class="op">.</span><span class="fu">add</span>(intro3)<span class="op">;</span></span>
+<span id="cb12-48"><a href="#cb12-48" aria-hidden="true" tabindex="-1"></a>  controlPanel<span class="op">.</span><span class="fu">add</span>(gifButton)<span class="op">;</span> <span class="co">// Add GIF generation button</span></span>
+<span id="cb12-49"><a href="#cb12-49" aria-hidden="true" tabindex="-1"></a>  controlPanel<span class="op">.</span><span class="fu">add</span>(intro4)<span class="op">;</span></span>
+<span id="cb12-50"><a href="#cb12-50" aria-hidden="true" tabindex="-1"></a>  controlPanel<span class="op">.</span><span class="fu">add</span>(analyzeButton)<span class="op">;</span> <span class="co">// Add water mask analysis button</span></span>
+<span id="cb12-51"><a href="#cb12-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">displayLayers</span>(<span class="st">'frequency'</span>)<span class="op">;</span>  <span class="co">// When return to the home page, show only the water body frequency layer.</span></span>
+<span id="cb12-52"><a href="#cb12-52" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span>
+<span id="cb12-53"><a href="#cb12-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-54"><a href="#cb12-54" aria-hidden="true" tabindex="-1"></a><span class="co">// Define GIF button and its function</span></span>
+<span id="cb12-55"><a href="#cb12-55" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> gifButton <span class="op">=</span> ui<span class="op">.</span><span class="fu">Button</span>({</span>
+<span id="cb12-56"><a href="#cb12-56" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">'Time-Lapse GIFs'</span><span class="op">,</span></span>
+<span id="cb12-57"><a href="#cb12-57" aria-hidden="true" tabindex="-1"></a>  <span class="dt">style</span><span class="op">:</span> {</span>
+<span id="cb12-58"><a href="#cb12-58" aria-hidden="true" tabindex="-1"></a>    <span class="dt">fontSize</span><span class="op">:</span> <span class="st">'16px'</span><span class="op">,</span></span>
+<span id="cb12-59"><a href="#cb12-59" aria-hidden="true" tabindex="-1"></a>    <span class="dt">padding</span><span class="op">:</span> <span class="st">'10px'</span><span class="op">,</span></span>
+<span id="cb12-60"><a href="#cb12-60" aria-hidden="true" tabindex="-1"></a>    <span class="dt">margin</span><span class="op">:</span> <span class="st">'10px auto'</span><span class="op">,</span></span>
+<span id="cb12-61"><a href="#cb12-61" aria-hidden="true" tabindex="-1"></a>    <span class="dt">width</span><span class="op">:</span> <span class="st">'100%'</span><span class="op">,</span> </span>
+<span id="cb12-62"><a href="#cb12-62" aria-hidden="true" tabindex="-1"></a>    <span class="dt">stretch</span><span class="op">:</span> <span class="st">'horizontal'</span></span>
+<span id="cb12-63"><a href="#cb12-63" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb12-64"><a href="#cb12-64" aria-hidden="true" tabindex="-1"></a>  <span class="dt">onClick</span><span class="op">:</span> <span class="kw">function</span>() {</span>
+<span id="cb12-65"><a href="#cb12-65" aria-hidden="true" tabindex="-1"></a>    controlPanel<span class="op">.</span><span class="fu">clear</span>()<span class="op">;</span></span>
+<span id="cb12-66"><a href="#cb12-66" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> gifTitle <span class="op">=</span> ui<span class="op">.</span><span class="fu">Label</span>(<span class="st">'GIF'</span><span class="op">,</span> {<span class="dt">fontWeight</span><span class="op">:</span> <span class="st">'bold'</span><span class="op">,</span> <span class="dt">fontSize</span><span class="op">:</span> <span class="st">'18px'</span><span class="op">,</span> <span class="dt">textAlign</span><span class="op">:</span> <span class="st">'center'</span>})<span class="op">;</span></span>
+<span id="cb12-67"><a href="#cb12-67" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> gifDescription <span class="op">=</span> ui<span class="op">.</span><span class="fu">Label</span>(<span class="st">'Select a date range to generate an animated GIF of the region.'</span><span class="op">,</span> {<span class="dt">fontSize</span><span class="op">:</span> <span class="st">'13px'</span><span class="op">,</span> <span class="dt">textAlign</span><span class="op">:</span> <span class="st">'center'</span>})<span class="op">;</span></span>
+<span id="cb12-68"><a href="#cb12-68" aria-hidden="true" tabindex="-1"></a>    controlPanel<span class="op">.</span><span class="fu">add</span>(gifTitle)<span class="op">;</span></span>
+<span id="cb12-69"><a href="#cb12-69" aria-hidden="true" tabindex="-1"></a>    controlPanel<span class="op">.</span><span class="fu">add</span>(gifDescription)<span class="op">;</span></span>
+<span id="cb12-70"><a href="#cb12-70" aria-hidden="true" tabindex="-1"></a>    controlPanel<span class="op">.</span><span class="fu">add</span>(gifDateSlider)<span class="op">;</span></span>
+<span id="cb12-71"><a href="#cb12-71" aria-hidden="true" tabindex="-1"></a>    <span class="fu">updateGIF</span>()<span class="op">;</span>  <span class="co">// Call a function to update a GIF based on the selected date range</span></span>
+<span id="cb12-72"><a href="#cb12-72" aria-hidden="true" tabindex="-1"></a>    controlPanel<span class="op">.</span><span class="fu">add</span>(homeButton)<span class="op">;</span></span>
+<span id="cb12-73"><a href="#cb12-73" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb12-74"><a href="#cb12-74" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span>
+<span id="cb12-75"><a href="#cb12-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-76"><a href="#cb12-76" aria-hidden="true" tabindex="-1"></a><span class="co">// Define analyse water masks button</span></span>
+<span id="cb12-77"><a href="#cb12-77" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> analyzeButton <span class="op">=</span> ui<span class="op">.</span><span class="fu">Button</span>({</span>
+<span id="cb12-78"><a href="#cb12-78" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">'Water Body Area'</span><span class="op">,</span></span>
+<span id="cb12-79"><a href="#cb12-79" aria-hidden="true" tabindex="-1"></a>  <span class="dt">style</span><span class="op">:</span> {</span>
+<span id="cb12-80"><a href="#cb12-80" aria-hidden="true" tabindex="-1"></a>    <span class="dt">fontSize</span><span class="op">:</span> <span class="st">'16px'</span><span class="op">,</span></span>
+<span id="cb12-81"><a href="#cb12-81" aria-hidden="true" tabindex="-1"></a>    <span class="dt">padding</span><span class="op">:</span> <span class="st">'10px'</span><span class="op">,</span></span>
+<span id="cb12-82"><a href="#cb12-82" aria-hidden="true" tabindex="-1"></a>    <span class="dt">margin</span><span class="op">:</span> <span class="st">'10px auto'</span><span class="op">,</span></span>
+<span id="cb12-83"><a href="#cb12-83" aria-hidden="true" tabindex="-1"></a>    <span class="dt">width</span><span class="op">:</span> <span class="st">'100%'</span><span class="op">,</span> </span>
+<span id="cb12-84"><a href="#cb12-84" aria-hidden="true" tabindex="-1"></a>    <span class="dt">stretch</span><span class="op">:</span> <span class="st">'horizontal'</span></span>
+<span id="cb12-85"><a href="#cb12-85" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb12-86"><a href="#cb12-86" aria-hidden="true" tabindex="-1"></a>  <span class="dt">onClick</span><span class="op">:</span> <span class="kw">function</span>() {</span>
+<span id="cb12-87"><a href="#cb12-87" aria-hidden="true" tabindex="-1"></a>    controlPanel<span class="op">.</span><span class="fu">clear</span>()<span class="op">;</span></span>
+<span id="cb12-88"><a href="#cb12-88" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> chartTitle <span class="op">=</span> ui<span class="op">.</span><span class="fu">Label</span>(<span class="st">'Area of the identified water mask'</span><span class="op">,</span> {<span class="dt">fontWeight</span><span class="op">:</span> <span class="st">'bold'</span><span class="op">,</span> <span class="dt">fontSize</span><span class="op">:</span> <span class="st">'18px'</span><span class="op">,</span> <span class="dt">textAlign</span><span class="op">:</span> <span class="st">'center'</span>})<span class="op">;</span></span>
+<span id="cb12-89"><a href="#cb12-89" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> chartDescription <span class="op">=</span> ui<span class="op">.</span><span class="fu">Label</span>(<span class="st">'Select a date range to generate a water body mask for the area.'</span><span class="op">,</span> {<span class="dt">fontSize</span><span class="op">:</span> <span class="st">'13px'</span><span class="op">,</span> <span class="dt">textAlign</span><span class="op">:</span> <span class="st">'center'</span>})<span class="op">;</span></span>
+<span id="cb12-90"><a href="#cb12-90" aria-hidden="true" tabindex="-1"></a>    controlPanel<span class="op">.</span><span class="fu">add</span>(chartTitle)<span class="op">;</span></span>
+<span id="cb12-91"><a href="#cb12-91" aria-hidden="true" tabindex="-1"></a>    controlPanel<span class="op">.</span><span class="fu">add</span>(chartDescription)<span class="op">;</span></span>
+<span id="cb12-92"><a href="#cb12-92" aria-hidden="true" tabindex="-1"></a>    controlPanel<span class="op">.</span><span class="fu">add</span>(waterMaskDateSlider)<span class="op">;</span> <span class="co">// Add date slider for selecting analysis date range</span></span>
+<span id="cb12-93"><a href="#cb12-93" aria-hidden="true" tabindex="-1"></a>    <span class="fu">updateWaterDataAndChart</span>()<span class="op">;</span>  <span class="co">// Call function to update water body mask data and graphs</span></span>
+<span id="cb12-94"><a href="#cb12-94" aria-hidden="true" tabindex="-1"></a>    controlPanel<span class="op">.</span><span class="fu">add</span>(homeButton)<span class="op">;</span></span>
+<span id="cb12-95"><a href="#cb12-95" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb12-96"><a href="#cb12-96" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span>
 <span id="cb12-97"><a href="#cb12-97" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-98"><a href="#cb12-98" aria-hidden="true" tabindex="-1"></a><span class="co">// Set GIF and water mask button click handlers to their respective panel showing functions</span></span>
-<span id="cb12-99"><a href="#cb12-99" aria-hidden="true" tabindex="-1"></a>gifButton<span class="op">.</span><span class="fu">onClick</span>(showGIFPanel)<span class="op">;</span></span>
-<span id="cb12-100"><a href="#cb12-100" aria-hidden="true" tabindex="-1"></a>analyzeButton<span class="op">.</span><span class="fu">onClick</span>(showWaterMaskPanel)<span class="op">;</span></span>
-<span id="cb12-101"><a href="#cb12-101" aria-hidden="true" tabindex="-1"></a><span class="co">// Set the home button click handler to the home function</span></span>
-<span id="cb12-102"><a href="#cb12-102" aria-hidden="true" tabindex="-1"></a>homeButton<span class="op">.</span><span class="fu">onClick</span>(home)<span class="op">;</span></span>
-<span id="cb12-103"><a href="#cb12-103" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-104"><a href="#cb12-104" aria-hidden="true" tabindex="-1"></a><span class="co">// Add the control panel to the map and show the home interface</span></span>
-<span id="cb12-105"><a href="#cb12-105" aria-hidden="true" tabindex="-1"></a><span class="bu">Map</span><span class="op">.</span><span class="fu">add</span>(controlPanel)<span class="op">;</span></span>
-<span id="cb12-106"><a href="#cb12-106" aria-hidden="true" tabindex="-1"></a><span class="fu">home</span>()<span class="op">;</span>  <span class="co">// Initialise and display the main interface</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-
+<span id="cb12-98"><a href="#cb12-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-99"><a href="#cb12-99" aria-hidden="true" tabindex="-1"></a><span class="co">// Set GIF and water mask button click handlers to their respective panel showing functions</span></span>
+<span id="cb12-100"><a href="#cb12-100" aria-hidden="true" tabindex="-1"></a>gifButton<span class="op">.</span><span class="fu">onClick</span>(showGIFPanel)<span class="op">;</span></span>
+<span id="cb12-101"><a href="#cb12-101" aria-hidden="true" tabindex="-1"></a>analyzeButton<span class="op">.</span><span class="fu">onClick</span>(showWaterMaskPanel)<span class="op">;</span></span>
+<span id="cb12-102"><a href="#cb12-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-103"><a href="#cb12-103" aria-hidden="true" tabindex="-1"></a><span class="co">// Set the home button click handler to the home function</span></span>
+<span id="cb12-104"><a href="#cb12-104" aria-hidden="true" tabindex="-1"></a>homeButton<span class="op">.</span><span class="fu">onClick</span>(home)<span class="op">;</span></span>
+<span id="cb12-105"><a href="#cb12-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-106"><a href="#cb12-106" aria-hidden="true" tabindex="-1"></a><span class="co">// Add the control panel to the map and show the home interface</span></span>
+<span id="cb12-107"><a href="#cb12-107" aria-hidden="true" tabindex="-1"></a><span class="bu">Map</span><span class="op">.</span><span class="fu">add</span>(controlPanel)<span class="op">;</span></span>
+<span id="cb12-108"><a href="#cb12-108" aria-hidden="true" tabindex="-1"></a><span class="fu">home</span>()<span class="op">;</span>  <span class="co">// Initialise and display the main interface</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 </section>
+</section>
+<section id="reference" class="level2">
+<h2 class="anchored" data-anchor-id="reference">Reference</h2>
+<p>Yao, J. P., Yang, L. K., Chen, T. and Song, C. Q. (2021) ‘Consecutive Monitoring of the Poyang Lake Wetland by Integrating Sentinel-2 with Sentinel-1 and Landsat 8 Data’, Remote Sensing Technology and Application, 36(4), pp.&nbsp;760-776.</p>
+
+
 </section>
 </section>
 
