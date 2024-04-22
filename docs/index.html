@@ -160,7 +160,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="the-application" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="the-application">The Application</h2>
-<p>To view full earth engine code, please <a href="https://code.earthengine.google.com/3c6566fca3ee7b4d6dd7e55791d222f0">click here</a>.</p>
+<p>To view full earth engine code, please <a href="https://code.earthengine.google.com/c3fe092cc219644d9fcf785217470cf3">click here</a>.</p>
 <div class="column-page">
 <iframe src="https://ee-dengwx25.projects.earthengine.app/view/water-body-monitoring" width="100%" height="700px">
 </iframe>
@@ -631,52 +631,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb12-64"><a href="#cb12-64" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
 <span id="cb12-65"><a href="#cb12-65" aria-hidden="true" tabindex="-1"></a>  <span class="dt">onClick</span><span class="op">:</span> <span class="kw">function</span>() {</span>
 <span id="cb12-66"><a href="#cb12-66" aria-hidden="true" tabindex="-1"></a>    controlPanel<span class="op">.</span><span class="fu">clear</span>()<span class="op">;</span></span>
-<span id="cb12-67"><a href="#cb12-67" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> gifTitle <span class="op">=</span> ui<span class="op">.</span><span class="fu">Label</span>(<span class="st">'GIF'</span><span class="op">,</span> {<span class="dt">fontWeight</span><span class="op">:</span> <span class="st">'bold'</span><span class="op">,</span> <span class="dt">fontSize</span><span class="op">:</span> <span class="st">'18px'</span><span class="op">,</span> <span class="dt">textAlign</span><span class="op">:</span> <span class="st">'center'</span>})<span class="op">;</span></span>
-<span id="cb12-68"><a href="#cb12-68" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> gifDescription <span class="op">=</span> ui<span class="op">.</span><span class="fu">Label</span>(<span class="st">'Select a date range to generate an animated GIF of the region.'</span><span class="op">,</span> {<span class="dt">fontSize</span><span class="op">:</span> <span class="st">'13px'</span><span class="op">,</span> <span class="dt">textAlign</span><span class="op">:</span> <span class="st">'center'</span>})<span class="op">;</span></span>
-<span id="cb12-69"><a href="#cb12-69" aria-hidden="true" tabindex="-1"></a>    controlPanel<span class="op">.</span><span class="fu">add</span>(gifTitle)<span class="op">;</span></span>
-<span id="cb12-70"><a href="#cb12-70" aria-hidden="true" tabindex="-1"></a>    controlPanel<span class="op">.</span><span class="fu">add</span>(gifDescription)<span class="op">;</span></span>
-<span id="cb12-71"><a href="#cb12-71" aria-hidden="true" tabindex="-1"></a>    controlPanel<span class="op">.</span><span class="fu">add</span>(gifDateSlider)<span class="op">;</span></span>
-<span id="cb12-72"><a href="#cb12-72" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Call a function to update a GIF based on the selected date range</span></span>
-<span id="cb12-73"><a href="#cb12-73" aria-hidden="true" tabindex="-1"></a>    <span class="fu">updateGIF</span>()<span class="op">;</span>  </span>
-<span id="cb12-74"><a href="#cb12-74" aria-hidden="true" tabindex="-1"></a>    controlPanel<span class="op">.</span><span class="fu">add</span>(homeButton)<span class="op">;</span></span>
-<span id="cb12-75"><a href="#cb12-75" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb12-76"><a href="#cb12-76" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span>
-<span id="cb12-77"><a href="#cb12-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-78"><a href="#cb12-78" aria-hidden="true" tabindex="-1"></a><span class="co">// Define analyse water masks button</span></span>
-<span id="cb12-79"><a href="#cb12-79" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> analyzeButton <span class="op">=</span> ui<span class="op">.</span><span class="fu">Button</span>({</span>
-<span id="cb12-80"><a href="#cb12-80" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">'Water Body Area'</span><span class="op">,</span></span>
-<span id="cb12-81"><a href="#cb12-81" aria-hidden="true" tabindex="-1"></a>  <span class="dt">style</span><span class="op">:</span> {</span>
-<span id="cb12-82"><a href="#cb12-82" aria-hidden="true" tabindex="-1"></a>    <span class="dt">fontSize</span><span class="op">:</span> <span class="st">'16px'</span><span class="op">,</span></span>
-<span id="cb12-83"><a href="#cb12-83" aria-hidden="true" tabindex="-1"></a>    <span class="dt">padding</span><span class="op">:</span> <span class="st">'10px'</span><span class="op">,</span></span>
-<span id="cb12-84"><a href="#cb12-84" aria-hidden="true" tabindex="-1"></a>    <span class="dt">margin</span><span class="op">:</span> <span class="st">'10px auto'</span><span class="op">,</span></span>
-<span id="cb12-85"><a href="#cb12-85" aria-hidden="true" tabindex="-1"></a>    <span class="dt">width</span><span class="op">:</span> <span class="st">'100%'</span><span class="op">,</span> </span>
-<span id="cb12-86"><a href="#cb12-86" aria-hidden="true" tabindex="-1"></a>    <span class="dt">stretch</span><span class="op">:</span> <span class="st">'horizontal'</span></span>
-<span id="cb12-87"><a href="#cb12-87" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
-<span id="cb12-88"><a href="#cb12-88" aria-hidden="true" tabindex="-1"></a>  <span class="dt">onClick</span><span class="op">:</span> <span class="kw">function</span>() {</span>
-<span id="cb12-89"><a href="#cb12-89" aria-hidden="true" tabindex="-1"></a>    controlPanel<span class="op">.</span><span class="fu">clear</span>()<span class="op">;</span></span>
-<span id="cb12-90"><a href="#cb12-90" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> chartTitle <span class="op">=</span> ui<span class="op">.</span><span class="fu">Label</span>(<span class="st">'Area of the identified water mask'</span><span class="op">,</span> {<span class="dt">fontWeight</span><span class="op">:</span> <span class="st">'bold'</span><span class="op">,</span> <span class="dt">fontSize</span><span class="op">:</span> <span class="st">'18px'</span><span class="op">,</span> <span class="dt">textAlign</span><span class="op">:</span> <span class="st">'center'</span>})<span class="op">;</span></span>
-<span id="cb12-91"><a href="#cb12-91" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> chartDescription <span class="op">=</span> ui<span class="op">.</span><span class="fu">Label</span>(<span class="st">'Select a date range to generate a water body mask for the area.'</span><span class="op">,</span> {<span class="dt">fontSize</span><span class="op">:</span> <span class="st">'13px'</span><span class="op">,</span> <span class="dt">textAlign</span><span class="op">:</span> <span class="st">'center'</span>})<span class="op">;</span></span>
-<span id="cb12-92"><a href="#cb12-92" aria-hidden="true" tabindex="-1"></a>    controlPanel<span class="op">.</span><span class="fu">add</span>(chartTitle)<span class="op">;</span></span>
-<span id="cb12-93"><a href="#cb12-93" aria-hidden="true" tabindex="-1"></a>    controlPanel<span class="op">.</span><span class="fu">add</span>(chartDescription)<span class="op">;</span></span>
-<span id="cb12-94"><a href="#cb12-94" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Add date slider for selecting analysis date range</span></span>
-<span id="cb12-95"><a href="#cb12-95" aria-hidden="true" tabindex="-1"></a>    controlPanel<span class="op">.</span><span class="fu">add</span>(waterMaskDateSlider)<span class="op">;</span> </span>
-<span id="cb12-96"><a href="#cb12-96" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Call function to update water body mask data and graphs</span></span>
-<span id="cb12-97"><a href="#cb12-97" aria-hidden="true" tabindex="-1"></a>    <span class="fu">updateWaterDataAndChart</span>()<span class="op">;</span>  </span>
-<span id="cb12-98"><a href="#cb12-98" aria-hidden="true" tabindex="-1"></a>    controlPanel<span class="op">.</span><span class="fu">add</span>(homeButton)<span class="op">;</span></span>
-<span id="cb12-99"><a href="#cb12-99" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb12-100"><a href="#cb12-100" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span>
+<span id="cb12-67"><a href="#cb12-67" aria-hidden="true" tabindex="-1"></a>    controlPanel<span class="op">.</span><span class="fu">add</span>(gifDateSlider)<span class="op">;</span></span>
+<span id="cb12-68"><a href="#cb12-68" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Call a function to update a GIF based on the selected date range</span></span>
+<span id="cb12-69"><a href="#cb12-69" aria-hidden="true" tabindex="-1"></a>    <span class="fu">updateGIF</span>()<span class="op">;</span>  </span>
+<span id="cb12-70"><a href="#cb12-70" aria-hidden="true" tabindex="-1"></a>    controlPanel<span class="op">.</span><span class="fu">add</span>(homeButton)<span class="op">;</span></span>
+<span id="cb12-71"><a href="#cb12-71" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb12-72"><a href="#cb12-72" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span>
+<span id="cb12-73"><a href="#cb12-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-74"><a href="#cb12-74" aria-hidden="true" tabindex="-1"></a><span class="co">// Define analyse water masks button</span></span>
+<span id="cb12-75"><a href="#cb12-75" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> analyzeButton <span class="op">=</span> ui<span class="op">.</span><span class="fu">Button</span>({</span>
+<span id="cb12-76"><a href="#cb12-76" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">'Water Body Area'</span><span class="op">,</span></span>
+<span id="cb12-77"><a href="#cb12-77" aria-hidden="true" tabindex="-1"></a>  <span class="dt">style</span><span class="op">:</span> {</span>
+<span id="cb12-78"><a href="#cb12-78" aria-hidden="true" tabindex="-1"></a>    <span class="dt">fontSize</span><span class="op">:</span> <span class="st">'16px'</span><span class="op">,</span></span>
+<span id="cb12-79"><a href="#cb12-79" aria-hidden="true" tabindex="-1"></a>    <span class="dt">padding</span><span class="op">:</span> <span class="st">'10px'</span><span class="op">,</span></span>
+<span id="cb12-80"><a href="#cb12-80" aria-hidden="true" tabindex="-1"></a>    <span class="dt">margin</span><span class="op">:</span> <span class="st">'10px auto'</span><span class="op">,</span></span>
+<span id="cb12-81"><a href="#cb12-81" aria-hidden="true" tabindex="-1"></a>    <span class="dt">width</span><span class="op">:</span> <span class="st">'100%'</span><span class="op">,</span> </span>
+<span id="cb12-82"><a href="#cb12-82" aria-hidden="true" tabindex="-1"></a>    <span class="dt">stretch</span><span class="op">:</span> <span class="st">'horizontal'</span></span>
+<span id="cb12-83"><a href="#cb12-83" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb12-84"><a href="#cb12-84" aria-hidden="true" tabindex="-1"></a>  <span class="dt">onClick</span><span class="op">:</span> <span class="kw">function</span>() {</span>
+<span id="cb12-85"><a href="#cb12-85" aria-hidden="true" tabindex="-1"></a>    controlPanel<span class="op">.</span><span class="fu">clear</span>()<span class="op">;</span></span>
+<span id="cb12-86"><a href="#cb12-86" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Add date slider for selecting analysis date range</span></span>
+<span id="cb12-87"><a href="#cb12-87" aria-hidden="true" tabindex="-1"></a>    controlPanel<span class="op">.</span><span class="fu">add</span>(waterMaskDateSlider)<span class="op">;</span> </span>
+<span id="cb12-88"><a href="#cb12-88" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Call function to update water body mask data and graphs</span></span>
+<span id="cb12-89"><a href="#cb12-89" aria-hidden="true" tabindex="-1"></a>    <span class="fu">updateWaterDataAndChart</span>()<span class="op">;</span>  </span>
+<span id="cb12-90"><a href="#cb12-90" aria-hidden="true" tabindex="-1"></a>    controlPanel<span class="op">.</span><span class="fu">add</span>(homeButton)<span class="op">;</span></span>
+<span id="cb12-91"><a href="#cb12-91" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb12-92"><a href="#cb12-92" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span>
+<span id="cb12-93"><a href="#cb12-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-94"><a href="#cb12-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-95"><a href="#cb12-95" aria-hidden="true" tabindex="-1"></a><span class="co">// Set GIF and water mask button click handlers to their respective panel showing functions</span></span>
+<span id="cb12-96"><a href="#cb12-96" aria-hidden="true" tabindex="-1"></a>gifButton<span class="op">.</span><span class="fu">onClick</span>(showGIFPanel)<span class="op">;</span></span>
+<span id="cb12-97"><a href="#cb12-97" aria-hidden="true" tabindex="-1"></a>analyzeButton<span class="op">.</span><span class="fu">onClick</span>(showWaterMaskPanel)<span class="op">;</span></span>
+<span id="cb12-98"><a href="#cb12-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-99"><a href="#cb12-99" aria-hidden="true" tabindex="-1"></a><span class="co">// Set the home button click handler to the home function</span></span>
+<span id="cb12-100"><a href="#cb12-100" aria-hidden="true" tabindex="-1"></a>homeButton<span class="op">.</span><span class="fu">onClick</span>(home)<span class="op">;</span></span>
 <span id="cb12-101"><a href="#cb12-101" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-102"><a href="#cb12-102" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-103"><a href="#cb12-103" aria-hidden="true" tabindex="-1"></a><span class="co">// Set GIF and water mask button click handlers to their respective panel showing functions</span></span>
-<span id="cb12-104"><a href="#cb12-104" aria-hidden="true" tabindex="-1"></a>gifButton<span class="op">.</span><span class="fu">onClick</span>(showGIFPanel)<span class="op">;</span></span>
-<span id="cb12-105"><a href="#cb12-105" aria-hidden="true" tabindex="-1"></a>analyzeButton<span class="op">.</span><span class="fu">onClick</span>(showWaterMaskPanel)<span class="op">;</span></span>
-<span id="cb12-106"><a href="#cb12-106" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-107"><a href="#cb12-107" aria-hidden="true" tabindex="-1"></a><span class="co">// Set the home button click handler to the home function</span></span>
-<span id="cb12-108"><a href="#cb12-108" aria-hidden="true" tabindex="-1"></a>homeButton<span class="op">.</span><span class="fu">onClick</span>(home)<span class="op">;</span></span>
-<span id="cb12-109"><a href="#cb12-109" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-110"><a href="#cb12-110" aria-hidden="true" tabindex="-1"></a><span class="co">// Add the control panel to the map and show the home interface</span></span>
-<span id="cb12-111"><a href="#cb12-111" aria-hidden="true" tabindex="-1"></a><span class="bu">Map</span><span class="op">.</span><span class="fu">add</span>(controlPanel)<span class="op">;</span></span>
-<span id="cb12-112"><a href="#cb12-112" aria-hidden="true" tabindex="-1"></a><span class="fu">home</span>()<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb12-102"><a href="#cb12-102" aria-hidden="true" tabindex="-1"></a><span class="co">// Add the control panel to the map and show the home interface</span></span>
+<span id="cb12-103"><a href="#cb12-103" aria-hidden="true" tabindex="-1"></a><span class="bu">Map</span><span class="op">.</span><span class="fu">add</span>(controlPanel)<span class="op">;</span></span>
+<span id="cb12-104"><a href="#cb12-104" aria-hidden="true" tabindex="-1"></a><span class="fu">home</span>()<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 </section>
 </section>

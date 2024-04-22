@@ -50,7 +50,7 @@ Our application's interface meets user needs by providing interactive tools to v
 
 ## The Application
 
-To view full earth engine code, please [click here](https://code.earthengine.google.com/3c6566fca3ee7b4d6dd7e55791d222f0).
+To view full earth engine code, please [click here](https://code.earthengine.google.com/c3fe092cc219644d9fcf785217470cf3).
 
 ::: column-page
 <iframe src="https://ee-dengwx25.projects.earthengine.app/view/water-body-monitoring" width="100%" height="700px">
@@ -549,10 +549,6 @@ var gifButton = ui.Button({
   },
   onClick: function() {
     controlPanel.clear();
-    var gifTitle = ui.Label('GIF', {fontWeight: 'bold', fontSize: '18px', textAlign: 'center'});
-    var gifDescription = ui.Label('Select a date range to generate an animated GIF of the region.', {fontSize: '13px', textAlign: 'center'});
-    controlPanel.add(gifTitle);
-    controlPanel.add(gifDescription);
     controlPanel.add(gifDateSlider);
     // Call a function to update a GIF based on the selected date range
     updateGIF();  
@@ -572,10 +568,6 @@ var analyzeButton = ui.Button({
   },
   onClick: function() {
     controlPanel.clear();
-    var chartTitle = ui.Label('Area of the identified water mask', {fontWeight: 'bold', fontSize: '18px', textAlign: 'center'});
-    var chartDescription = ui.Label('Select a date range to generate a water body mask for the area.', {fontSize: '13px', textAlign: 'center'});
-    controlPanel.add(chartTitle);
-    controlPanel.add(chartDescription);
     // Add date slider for selecting analysis date range
     controlPanel.add(waterMaskDateSlider); 
     // Call function to update water body mask data and graphs
