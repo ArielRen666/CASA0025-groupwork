@@ -319,6 +319,9 @@ var layerOptionsButton = ui.Button({
     controlPanel.add(homeButton);
   }
 });
+
+// Add the layerOptionsButton to the main control panel.
+controlPanel.add(layerOptionsButton);
 ```
 ![Layer Options](images/222.png)
 
