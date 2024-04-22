@@ -4,15 +4,18 @@
 
 ### Problem Statement
 
-Influenced by monsoon rainfall and the hydrology of the Yangtze River (the longest river in Asia and the third longest in the world), Poyang Lake, the largest freshwater lake and the second largest lake in China, exhibits significant seasonal water level fluctuations. Our application is dedicated to monitoring and managing the dynamics of Poyang Lake. Understanding the seasonal fluctuations in water levels driven by monsoon rainfall is crucial for ecological conservation, disaster management, and understanding environmental changes.
+Influenced by monsoon rainfall and the hydrology of the Yangtze River, Poyang Lake, the largest freshwater lake and the second largest lake in China, exhibits significant seasonal water level fluctuations. Its water level even rise and fall up to more than ten metres in a few months, affecting millions of people. It is also internationally recognised as an important wetland, the home of many endangered species. Thus, against this backdrop, our application is dedicated to monitoring and managing the dynamics of Poyang Lake, which is vital to people around it, ecological conservation, disaster management and understanding environmental change.
 
 ### End User
 
--   Policy makers. The application provides policy makers with a real-time water body change monitoring tool for Poyang Lake, which helps policy makers to develop and optimize water management measures.
+- **Local Residents and Businesses:** Provides a transparent and intuitive platform for those reliant on the lake for irrigation, fishing, and water resources, directly impacting their economic stability and quality of life.
+   
+- **Students and the Public:** Serves as an educational tool to increase public awareness and interest in environmental issues. It uses interactive methods to inspire participation in lake conservation and the rational use of water resources.
+   
+- **Environmental Advocates:** Offers water level data to help monitor biodiversity, particularly endangered species, and assess the health of the ecosystem.
+   
+- **Policy Makers and Planners:** Supports development of informed policies on water management and environmental protection, ensuring decisions are data-driven.
 
--   Researchers. The application supports their research in the field of water resources management and environmental change by providing tools for water body extraction and time series analysis in Poyang Lake.
-
--   Public. The application provides a transparent and intuitive platform for the public to understand the real-time situation and change trends of Poyang Lake through visualization of data and charts, and to raise the public's attention to environmental issues.
 
 ### Data
 
@@ -362,9 +365,11 @@ To manage and display the GIF animations, it is essential first to ensure that n
 ``` js
   //  Updating GIF animations with a fixed index
   if (controlPanel.widgets().length() > 3) {
-    controlPanel.widgets().set(3, gifAnimation);  // Make sure the GIF animation is always in the fourth position
+    // Make sure the GIF animation is always in the fourth position
+    controlPanel.widgets().set(3, gifAnimation);
   } else {
-    controlPanel.widgets().insert(3, gifAnimation);  // If there are not already four controls, insert
+     // If there are not already four controls, insert
+     controlPanel.widgets().insert(3, gifAnimation); 
   }
 }
 
@@ -377,10 +382,10 @@ function showGIFPanel() {
   controlPanel.add(gifTitle);
   controlPanel.add(gifDescription);
   controlPanel.add(gifDateSlider);
-
-  updateGIF();  // Call the update function directly to load the initial GIF.
-
-  controlPanel.add(homeButton);  // Ensure that the homeButton is always added last
+  // Call the update function directly to load the initial GIF.
+  updateGIF();  
+  // Ensure that the homeButton is always added last
+  controlPanel.add(homeButton);  
 }
 ```
 
@@ -424,9 +429,9 @@ function updateWaterDataAndChart() {
 
   // Use a fixed index to update the water body area charts
   if (controlPanel.widgets().length() > 3) {
-    controlPanel.widgets().set(3, waterAreaChart);  // Make sure the water body area chart is always in the fourth position
+    controlPanel.widgets().set(3, waterAreaChart);
   } else {
-    controlPanel.widgets().insert(3, waterAreaChart);  // If there are not already four controls, insert
+    controlPanel.widgets().insert(3, waterAreaChart);  
   }
 
   //  Bind click events to line charts
@@ -461,9 +466,7 @@ function showWaterMaskPanel() {
   controlPanel.add(maskTitle);
   controlPanel.add(maskDescription);
   controlPanel.add(waterMaskDateSlider);
-
   updateWaterDataAndChart();
-
   controlPanel.add(homeButton);
 }
 ```
@@ -517,14 +520,15 @@ var home = function() {
   Map.setOptions("Hybrid");
   controlPanel.clear();
   controlPanel.add(title);
-  controlPanel.add(intro1); // Add introductory text
+  controlPanel.add(intro1);
   controlPanel.add(intro2);
-  controlPanel.add(layerOptionsButton); // Add new button
+  controlPanel.add(layerOptionsButton); 
   controlPanel.add(intro3);
-  controlPanel.add(gifButton); // Add GIF generation button
+  controlPanel.add(gifButton); 
   controlPanel.add(intro4);
-  controlPanel.add(analyzeButton); // Add water mask analysis button
-  displayLayers('frequency');  // When return to the home page, show only the water body frequency layer.
+  controlPanel.add(analyzeButton); 
+  // When return to the home page, show only the water body frequency layer.
+  displayLayers('frequency');  
 };
 
 // Define GIF button and its function
@@ -544,7 +548,8 @@ var gifButton = ui.Button({
     controlPanel.add(gifTitle);
     controlPanel.add(gifDescription);
     controlPanel.add(gifDateSlider);
-    updateGIF();  // Call a function to update a GIF based on the selected date range
+    // Call a function to update a GIF based on the selected date range
+    updateGIF();  
     controlPanel.add(homeButton);
   }
 });
@@ -565,8 +570,10 @@ var analyzeButton = ui.Button({
     var chartDescription = ui.Label('Select a date range to generate a water body mask for the area.', {fontSize: '13px', textAlign: 'center'});
     controlPanel.add(chartTitle);
     controlPanel.add(chartDescription);
-    controlPanel.add(waterMaskDateSlider); // Add date slider for selecting analysis date range
-    updateWaterDataAndChart();  // Call function to update water body mask data and graphs
+    // Add date slider for selecting analysis date range
+    controlPanel.add(waterMaskDateSlider); 
+    // Call function to update water body mask data and graphs
+    updateWaterDataAndChart();  
     controlPanel.add(homeButton);
   }
 });
@@ -581,7 +588,7 @@ homeButton.onClick(home);
 
 // Add the control panel to the map and show the home interface
 Map.add(controlPanel);
-home();  // Initialise and display the main interface
+home();
 ```
 ## Reference
 Yao, J. P., Yang, L. K., Chen, T. and Song, C. Q. (2021) ‘Consecutive Monitoring of the Poyang Lake Wetland by Integrating Sentinel-2 with Sentinel-1 and Landsat 8 Data’, Remote Sensing Technology and Application, 36(4), pp. 760-776.
